@@ -47,6 +47,7 @@ class UserController extends Controller
             $inputs = $request->except(
                 'image',
             );
+            $inputs['role_id'] = 2;
             if (!empty($request->image)) {
                 $image = $request->image;
                 $filename = "Image-" . time() . "-" . rand() . "." . $image->getClientOriginalExtension();

@@ -23,8 +23,7 @@ class UpdateRequest extends FormRequest
     {
         return [
             'full_name' => "required",
-            'email' => "required|email|unique:users,email," . $this->route('user'),
-            'password' => "required|confirmed",
+            'email' => "required|email|unique:users,email," . $this->route('user')->id,
         ];
     }
 
@@ -33,7 +32,6 @@ class UpdateRequest extends FormRequest
         return [
             'full_name' => "Full name",
             'email' => "Email",
-            'password' => "Password",
         ];
     }
 }
