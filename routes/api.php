@@ -2,6 +2,7 @@
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\Api\{AuthController, UserController};
 
 /*
 |--------------------------------------------------------------------------
@@ -13,7 +14,20 @@ use Illuminate\Support\Facades\Route;
 | be assigned to the "api" middleware group. Make something great!
 |
 */
+// Auth
+Route::post('/login', [AuthController::class, 'login']);
+Route::post('/reset-password', [AuthController::class, 'resetPassword']);
+Route::post('/forgot-password', [AuthController::class, 'forgotPassword']);
+Route::post('/change-password', [AuthController::class, 'changePassword']);
+Route::post('/user', [UserController::class, 'store']);
 
-Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
-    return $request->user();
+Route::middleware('auth:api')->group(function () {
+    Route::get('/current-user', [AuthController::class, 'currentUser']);
+    Route::post('/profile-update', [AuthController::class, 'profileUpdate']);
+
+    Route::apiResources([
+        'user' => UserController::class,
+    ], [
+        'except' => ['store']
+    ]);
 });
