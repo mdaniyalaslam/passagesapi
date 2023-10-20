@@ -22,7 +22,7 @@ return new class extends Migration
             $table->string('account_id')->nullable();
             $table->string('family_name')->nullable();
             $table->string('given_name')->nullable();
-            $table->boolean('is_active')->default(true);
+            $table->boolean('is_active')->default(false);
             $table->string('image')->nullable();
             $table->rememberToken();
             $table->timestamps();
