@@ -28,6 +28,7 @@ class User extends Authenticatable
         'given_name',
         'is_active',
         'image',
+        'remember_token'
     ];
 
     /**
