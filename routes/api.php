@@ -20,6 +20,7 @@ Route::post('/reset-password', [AuthController::class, 'resetPassword']);
 Route::post('/forgot-password', [AuthController::class, 'forgotPassword']);
 Route::post('/change-password', [AuthController::class, 'changePassword']);
 Route::post('/user', [UserController::class, 'store']);
+Route::post('/verify', [UserController::class, 'verify']);
 
 Route::middleware('auth:api')->group(function () {
     Route::get('/current-user', [AuthController::class, 'currentUser']);
