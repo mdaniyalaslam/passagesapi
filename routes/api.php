@@ -2,7 +2,7 @@
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\Api\{AuthController, UserController};
+use App\Http\Controllers\Api\{AuthController, ScreenTextController, UserController};
 
 /*
 |--------------------------------------------------------------------------
@@ -23,8 +23,14 @@ Route::post('/user', [UserController::class, 'store']);
 Route::post('/verify', [UserController::class, 'verify']);
 
 Route::middleware('auth:api')->group(function () {
+
+    //Auth
     Route::get('/current-user', [AuthController::class, 'currentUser']);
     Route::post('/profile-update', [AuthController::class, 'profileUpdate']);
+
+    //Screen Text
+    Route::get('/screen-text', [ScreenTextController::class, 'index']);
+    Route::post('/screen-text', [ScreenTextController::class, 'store_or_update']);
 
     Route::apiResources([
         'user' => UserController::class,
