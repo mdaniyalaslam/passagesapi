@@ -116,6 +116,7 @@ class UserController extends Controller
                 'image',
             );
             if (!empty($request->image)) {
+                if (!empty($user->image) && file_exists(public_path('storage/' . $user->image))) unlink(public_path('storage/' . $user->image));
                 $image = $request->image;
                 $filename = "Image-" . time() . "-" . rand() . "." . $image->getClientOriginalExtension();
                 $image->storeAs('user', $filename, "public");
@@ -152,6 +153,7 @@ class UserController extends Controller
 
         try {
             DB::beginTransaction();
+            if (!empty($user->image) && file_exists(public_path('storage/' . $user->image))) unlink(public_path('storage/' . $user->image));
             $user->delete();
             DB::commit();
             return response()->json([

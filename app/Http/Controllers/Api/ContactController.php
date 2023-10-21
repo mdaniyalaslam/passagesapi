@@ -113,6 +113,7 @@ class ContactController extends Controller
                 'image',
             );
             if (!empty($request->image)) {
+                if (!empty($contact->image) && file_exists(public_path('storage/' . $contact->image))) unlink(public_path('storage/' . $contact->image));
                 $image = $request->image;
                 $filename = "Image-" . time() . "-" . rand() . "." . $image->getClientOriginalExtension();
                 $image->storeAs('contact', $filename, "public");
@@ -149,6 +150,7 @@ class ContactController extends Controller
 
         try {
             DB::beginTransaction();
+            if (!empty($contact->image) && file_exists(public_path('storage/' . $contact->image))) unlink(public_path('storage/' . $contact->image));
             $contact->delete();
             DB::commit();
             return response()->json([
