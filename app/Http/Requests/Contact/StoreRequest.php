@@ -22,7 +22,6 @@ class StoreRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'user_id' => 'required|exists:users,id',
             'full_name' => 'required',
             'email' => 'required|email|unique:contacts,email',
             'phone' => 'required',
@@ -34,7 +33,6 @@ class StoreRequest extends FormRequest
     public function attributes(): array
     {
         return [
-            'user_id' => 'User',
             'full_name' => 'Full Name',
             'email' => 'Email',
             'phone' => 'Phone',

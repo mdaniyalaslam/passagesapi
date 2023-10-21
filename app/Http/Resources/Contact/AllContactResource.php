@@ -23,7 +23,9 @@ class AllContactResource extends JsonResource
             'phone' => $this->phone ?? '',
             'dob' => date('Y-m-d' , strtotime($this->dob)) ?? '',
             'image' => ($this->image) ? request()->getSchemeAndHttpHost() . '/storage/' . $this->image : '',
-            'user' => new AllUserResource($this->user),
+            $this->mergeWhen((!empty($this->user) && isset($resource['user'])), [
+                'user' => (!empty($this->user) && isset($resource['user'])) ? new AllUserResource($this->user) : '',
+            ]),
         ];
     }
 }
