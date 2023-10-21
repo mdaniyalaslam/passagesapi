@@ -9,7 +9,7 @@ class Contact extends Model
 {
     use HasFactory;
     protected $fillable = [
-        'user_id','name','email','phone','dob','image'
+        'user_id','full_name','email','phone','dob','image'
     ];
 
     public function user()

@@ -23,7 +23,7 @@ class StoreRequest extends FormRequest
     {
         return [
             'user_id' => 'required|exists:users,id',
-            'name' => 'required',
+            'full_name' => 'required',
             'email' => 'required|email|unique:contacts,email',
             'phone' => 'required',
             'dob' => 'required|date',
@@ -35,7 +35,7 @@ class StoreRequest extends FormRequest
     {
         return [
             'user_id' => 'User',
-            'name' => 'Full Name',
+            'full_name' => 'Full Name',
             'email' => 'Email',
             'phone' => 'Phone',
             'dob' => 'Date of Birth',

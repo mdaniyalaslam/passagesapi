@@ -22,7 +22,7 @@ class UpdateRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'name' => 'required',
+            'full_name' => 'required',
             'email' => 'required|email|unique:contacts,email,' . $this->route('contact')->id,
             'phone' => 'required',
             'dob' => 'required|date',
@@ -33,7 +33,7 @@ class UpdateRequest extends FormRequest
     public function attributes(): array
     {
         return [
-            'name' => 'Full Name',
+            'full_name' => 'Full Name',
             'email' => 'Email',
             'phone' => 'Phone',
             'dob' => 'Date of Birth',

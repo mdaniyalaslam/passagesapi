@@ -18,7 +18,7 @@ class AllContactResource extends JsonResource
         $resource = ((array) $this)['resource']->toArray();
         return [
             'id' => $this->id,
-            'full_name' => $this->name ?? '',
+            'full_name' => $this->full_name ?? '',
             'email' => $this->email ?? '',
             'phone' => $this->phone ?? '',
             'dob' => date('Y-m-d' , strtotime($this->dob)) ?? '',
