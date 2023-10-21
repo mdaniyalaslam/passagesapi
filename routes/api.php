@@ -2,7 +2,7 @@
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\Api\{AuthController, ScreenTextController, UserController};
+use App\Http\Controllers\Api\{AuthController, ContactController, ScreenTextController, UserController};
 
 /*
 |--------------------------------------------------------------------------
@@ -36,5 +36,9 @@ Route::middleware('auth:api')->group(function () {
         'user' => UserController::class,
     ], [
         'except' => ['store']
+    ]);
+
+    Route::apiResources([
+        'contact' => ContactController::class,
     ]);
 });
