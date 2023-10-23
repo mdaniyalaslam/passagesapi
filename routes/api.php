@@ -2,7 +2,7 @@
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\Api\{AuthController, ContactController, ScreenTextController, UserController};
+use App\Http\Controllers\Api\{AuthController, ContactController, EventController, LogController, ScreenTextController, UserController};
 
 /*
 |--------------------------------------------------------------------------
@@ -39,6 +39,8 @@ Route::middleware('auth:api')->group(function () {
     ]);
 
     Route::apiResources([
+        'log' => LogController::class,
         'contact' => ContactController::class,
+        'event' => EventController::class,
     ]);
 });
