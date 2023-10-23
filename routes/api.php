@@ -2,7 +2,7 @@
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\Api\{AuthController, ContactController, EventController, LogController, OcassionController, ScreenTextController, UserController};
+use App\Http\Controllers\Api\{AuthController, ContactController, EventController, LogController, OcassionController, ScreenTextController, ToneController, UserController};
 use App\Models\Ocassion;
 
 /*
@@ -44,5 +44,6 @@ Route::middleware('auth:api')->group(function () {
         'contact' => ContactController::class,
         'event' => EventController::class,
         'ocassion' => OcassionController::class,
+        'tone' => ToneController::class,
     ]);
 });
