@@ -22,8 +22,8 @@ class UpdateRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'name' => 'required|unique:tones,name',
-            'image' => 'required'
+            'name' => 'required|unique:tones,name,' . $this->route('tone')->id,
+            'image' => 'nullable'
         ];
     }
 

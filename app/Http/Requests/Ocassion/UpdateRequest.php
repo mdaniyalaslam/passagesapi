@@ -22,7 +22,7 @@ class UpdateRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'name' => 'required|unique:ocassions,name',
+            'name' => 'required|unique:ocassions,name,' . $this->route('ocassion')->id,
             'image' => 'nullable'
         ];
     }
