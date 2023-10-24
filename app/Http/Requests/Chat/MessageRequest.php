@@ -24,6 +24,7 @@ class MessageRequest extends FormRequest
         return [
             'contact_id' => 'required|exists:contacts,id',
             'message' => 'required',
+            'date' => 'required',
         ];
     }
 
@@ -32,6 +33,7 @@ class MessageRequest extends FormRequest
         return [
             'contact_id' => 'Contact',
             'message' => 'Message',
+            'date' => 'Date',
         ];
     }
 }

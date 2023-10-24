@@ -12,10 +12,6 @@ class Message extends Model
         'sender_id',
         'chat_id',
         'message',
-        'voice',
-        'video',
-        'event_name',
-        'event_desc',
         'schedule_date',
         'is_read'
     ];

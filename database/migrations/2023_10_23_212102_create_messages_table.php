@@ -17,10 +17,6 @@ return new class extends Migration
             $table->unsignedBigInteger('sender_id')->nullable();
             // $table->unsignedBigInteger('gift_id')->nullable();
             $table->text('message')->nullable();
-            $table->string('voice')->nullable();
-            $table->string('video')->nullable();
-            $table->string('event_name')->nullable();
-            $table->string('event_desc')->nullable();
             $table->dateTime('schedule_date')->nullable();
             $table->boolean('is_read')->default(false);
             $table->foreign('chat_id')->references('id')->on('chats')->onDelete('cascade');
