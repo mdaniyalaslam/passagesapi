@@ -2,7 +2,7 @@
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\Api\{AuthController, ContactController, EventController, GiftController, LogController, OcassionController, PaymentController, ScreenTextController, ToneController, UserController};
+use App\Http\Controllers\Api\{AuthController, ChatController, ContactController, EventController, GiftController, LogController, OcassionController, PaymentController, ScreenTextController, ToneController, UserController};
 use App\Models\Ocassion;
 
 /*
@@ -47,6 +47,12 @@ Route::middleware('auth:api')->group(function () {
         'tone' => ToneController::class,
         'gift' => GiftController::class,
     ]);
+
+    //chat
+    Route::get('/allMessages', [ChatController::class, 'all_messages']);
+    Route::get('/admin/show/chat/{id}', [ChatController::class, 'admin_show_chat']);
+    Route::post('/message', [ChatController::class, 'message']);
+    Route::post('/chats', [ChatController::class, 'chat']);
 
     //Gift Payment
     Route::post('/gift-payment', [PaymentController::class, 'gift_payment']);

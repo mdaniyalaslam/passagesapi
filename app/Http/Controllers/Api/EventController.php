@@ -6,8 +6,12 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\Event\StoreRequest;
 use App\Http\Requests\Event\UpdateRequest;
 use App\Http\Resources\Event\AllEventResource;
+use App\Models\Chat;
+use App\Models\Contact;
 use App\Models\Event;
 use App\Models\Log;
+use App\Models\Message;
+use App\Models\User;
 use Carbon\Carbon;
 use Error;
 use Illuminate\Http\Request;
@@ -22,7 +26,7 @@ class EventController extends Controller
     public function index(Request $request)
     {
         try {
-            $query = Event::with(['user' , 'contact']);
+            $query = Event::with(['user', 'contact']);
             if (!empty($request->skip))
                 $query->skip($request->skip);
             if (!empty($request->take))
@@ -49,11 +53,46 @@ class EventController extends Controller
     {
         try {
             DB::beginTransaction();
+            $user_id = auth()->user()->id;
             $inputs = $request->except(
                 'user_id',
             );
-            $inputs['user_id'] = auth()->user()->id;
+            $inputs['user_id'] = $user_id;
             $event = Event::create($inputs);
+
+            $contact = Contact::where('id', $request->contact_id)->first();
+            $receiver_id = User::where('email', $contact->email)->first()->id;
+            if (empty($receiver_id))
+                throw new Error('Contact not found');
+            $chat = Chat::where(function ($q) use ($user_id, $receiver_id) {
+                $q->where('sender_id', $user_id)->where('receiver_id', $receiver_id);
+            })->orWhere(function ($q) use ($receiver_id, $user_id) {
+                $q->where('sender_id', $receiver_id)->where('receiver_id', $user_id);
+            })->first();
+
+            if (!is_object($chat)) {
+                $chat = new Chat();
+                $chat->sender_id = $user_id;
+                $chat->receiver_id = $receiver_id;
+                if (!$chat->save())
+                    throw new Error("Chat not save!");
+            }
+
+            $messageData = [
+                'chat_id' => $chat->id,
+                'sender_id' => $user_id,
+                'schedule_date' => $request->date,
+            ];
+
+            if (!empty($request->name)) {
+                $messageData['message'] = $request->name;
+                Message::create($messageData);
+            }
+
+            if (!empty($request->desc)) {
+                $messageData['message'] = $request->desc;
+                Message::create($messageData);
+            }
 
             $today_date = Carbon::now();
             $logs = new Log();
@@ -61,7 +100,8 @@ class EventController extends Controller
             $logs->title = 'Event Add';
             $logs->date = $today_date;
             $logs->message = 'New Event has been successfully added at ' . $today_date;
-            if (!$logs->save()) throw new Error('Logs not saved');
+            if (!$logs->save())
+                throw new Error('Logs not saved');
             DB::commit();
             return response()->json([
                 'status' => true,
@@ -93,7 +133,7 @@ class EventController extends Controller
         return response()->json([
             'status' => true,
             'message' => "Event has been successfully found",
-            'event' => new AllEventResource($event->load(['user' , 'contact'])),
+            'event' => new AllEventResource($event->load(['user', 'contact'])),
         ]);
     }
 
@@ -121,7 +161,8 @@ class EventController extends Controller
             $logs->title = 'Event Update';
             $logs->date = $today_date;
             $logs->message = 'Event has been successfully updated at ' . $today_date;
-            if (!$logs->save()) throw new Error('Logs not saved');
+            if (!$logs->save())
+                throw new Error('Logs not saved');
             DB::commit();
             return response()->json([
                 'status' => true,
