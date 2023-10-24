@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Chat\MessageRequest;
+use App\Http\Resources\Chat\AllChatResource;
 use App\Models\Chat;
 use App\Models\Contact;
 use App\Models\Message;
@@ -121,7 +122,7 @@ class ChatController extends Controller
                 Message::create($messageData);
             }
 
-            $chat = Chat::with(['sender', 'receiver', 'messages'])->where(function ($q) use ($user_id, $receiver_id) {
+            $chat = Chat::with(['sender', 'receiver', 'messages.sender_message'])->where(function ($q) use ($user_id, $receiver_id) {
                 $q->where('sender_id', $user_id)->where('receiver_id', $receiver_id);
             })->orWhere(function ($q) use ($receiver_id, $user_id) {
                 $q->where('sender_id', $receiver_id)->where('receiver_id', $user_id);
@@ -131,7 +132,7 @@ class ChatController extends Controller
             return response()->json([
                 'status' => true,
                 'message' => "Message Send Successfully",
-                'chat' => $chat
+                'chat' => new AllChatResource($chat)
             ]);
         } catch (Throwable $th) {
             DB::rollBack();
