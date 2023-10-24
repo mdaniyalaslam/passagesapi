@@ -23,6 +23,8 @@ class ContactController extends Controller
     {
         try {
             $query = Contact::with('user');
+            if (!empty($request->user_id))
+                $query->where('user_id', $request->user_id);
             if (!empty($request->skip))
                 $query->skip($request->skip);
             if (!empty($request->take))
@@ -67,7 +69,8 @@ class ContactController extends Controller
             $logs->title = 'Contact Add';
             $logs->date = $today_date;
             $logs->message = 'New Contact has been successfully added at ' . $today_date;
-            if (!$logs->save()) throw new Error('Logs not saved');
+            if (!$logs->save())
+                throw new Error('Logs not saved');
             DB::commit();
             return response()->json([
                 'status' => true,
@@ -123,7 +126,8 @@ class ContactController extends Controller
                 'image',
             );
             if (!empty($request->image)) {
-                if (!empty($contact->image) && file_exists(public_path('storage/' . $contact->image))) unlink(public_path('storage/' . $contact->image));
+                if (!empty($contact->image) && file_exists(public_path('storage/' . $contact->image)))
+                    unlink(public_path('storage/' . $contact->image));
                 $image = $request->image;
                 $filename = "Image-" . time() . "-" . rand() . "." . $image->getClientOriginalExtension();
                 $image->storeAs('contact', $filename, "public");
@@ -136,7 +140,8 @@ class ContactController extends Controller
             $logs->title = 'Contact Update';
             $logs->date = $today_date;
             $logs->message = 'Contact has been successfully updated at ' . $today_date;
-            if (!$logs->save()) throw new Error('Logs not saved');
+            if (!$logs->save())
+                throw new Error('Logs not saved');
             DB::commit();
             return response()->json([
                 'status' => true,
@@ -167,7 +172,8 @@ class ContactController extends Controller
 
         try {
             DB::beginTransaction();
-            if (!empty($contact->image) && file_exists(public_path('storage/' . $contact->image))) unlink(public_path('storage/' . $contact->image));
+            if (!empty($contact->image) && file_exists(public_path('storage/' . $contact->image)))
+                unlink(public_path('storage/' . $contact->image));
             $contact->delete();
             DB::commit();
             return response()->json([
