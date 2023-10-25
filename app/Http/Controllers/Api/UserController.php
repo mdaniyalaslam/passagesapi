@@ -78,6 +78,7 @@ class UserController extends Controller
 
     /**
      * Display the specified resource.
+     * @param  \App\Models\User $user
      */
     public function show(User $user)
     {
@@ -98,6 +99,7 @@ class UserController extends Controller
     /**
      * Store a newly created resource in storage.
      * @param  \App\Http\Requests\User\UpdateRequest  $request
+     * @param  \App\Models\User $user
      */
     public function update(UpdateRequest $request, User $user)
     {
@@ -139,6 +141,7 @@ class UserController extends Controller
 
     /**
      * Remove the specified resource from storage.
+     * @param  \App\Models\User $user
      */
     public function destroy(User $user)
     {
