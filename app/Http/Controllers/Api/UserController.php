@@ -116,7 +116,8 @@ class UserController extends Controller
                 'image',
             );
             if (!empty($request->image)) {
-                if (!empty($user->image) && file_exists(public_path('storage/' . $user->image))) unlink(public_path('storage/' . $user->image));
+                if (!empty($user->image) && file_exists(public_path('storage/' . $user->image)))
+                    unlink(public_path('storage/' . $user->image));
                 $image = $request->image;
                 $filename = "Image-" . time() . "-" . rand() . "." . $image->getClientOriginalExtension();
                 $image->storeAs('user', $filename, "public");
@@ -153,7 +154,8 @@ class UserController extends Controller
 
         try {
             DB::beginTransaction();
-            if (!empty($user->image) && file_exists(public_path('storage/' . $user->image))) unlink(public_path('storage/' . $user->image));
+            if (!empty($user->image) && file_exists(public_path('storage/' . $user->image)))
+                unlink(public_path('storage/' . $user->image));
             $user->delete();
             DB::commit();
             return response()->json([
@@ -174,7 +176,8 @@ class UserController extends Controller
         try {
             DB::beginTransaction();
             $user = User::where('email', $request->email)->where('remember_token', $request->token)->first();
-            if (!$user) throw new Error('Invalid email or token.', 422);
+            if (!$user)
+                throw new Error('Invalid email or token.', 422);
             $user->is_active = true;
             $user->remember_token = null;
             $user->save();
@@ -190,6 +193,32 @@ class UserController extends Controller
                 'status' => false,
                 'message' => $th->getMessage(),
             ], 500);
+        }
+    }
+
+    public function statusChange($id)
+    {
+        try {
+            DB::beginTransaction();
+            $user = User::where('id', $id)->first();
+            if (empty($user))
+                throw new Error('User not found');
+            if ($user->is_active == 1) {
+                $user->is_active = 0;
+                if (!$user->save())
+                    throw new Error('Account not delete');
+                DB::commit();
+                return response()->json(['status' => true, 'message' => 'Successfully Delete Your Account']);
+            } else {
+                $user->is_active = 1;
+                if (!$user->save())
+                    throw new Error('Account not delete');
+                DB::commit();
+                return response()->json(['status' => true, 'message' => 'Successfully Delete Your Account']);
+            }
+        } catch (Throwable $th) {
+            DB::rollBack();
+            return response()->json(['status' => false, 'message' => $th->getMessage()], 500);
         }
     }
 }

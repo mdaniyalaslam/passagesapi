@@ -19,7 +19,6 @@ use App\Models\Ocassion;
 Route::post('/login', [AuthController::class, 'login']);
 Route::post('/reset-password', [AuthController::class, 'resetPassword']);
 Route::post('/forgot-password', [AuthController::class, 'forgotPassword']);
-Route::post('/change-password', [AuthController::class, 'changePassword']);
 Route::post('/user', [UserController::class, 'store']);
 Route::post('/verify', [UserController::class, 'verify']);
 
@@ -28,10 +27,14 @@ Route::middleware('auth:api')->group(function () {
     //Auth
     Route::get('/current-user', [AuthController::class, 'currentUser']);
     Route::post('/profile-update', [AuthController::class, 'profileUpdate']);
+    Route::post('/change-password', [AuthController::class, 'changePassword']);
 
     //Screen Text
     Route::get('/screen-text', [ScreenTextController::class, 'index']);
     Route::post('/screen-text', [ScreenTextController::class, 'store_or_update']);
+
+    //user
+    Route::get('/status/{id}', [UserController::class, 'status_change']);
 
     Route::apiResources([
         'user' => UserController::class,
