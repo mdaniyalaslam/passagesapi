@@ -82,20 +82,18 @@ class UserController extends Controller
      */
     public function show(User $user)
     {
-        try {
-            if (empty($user) || $user->role_id != 2) throw new Error('User not found' , 404);
-            return response()->json([
-                'status' => true,
-                'message' => "User has been successfully found",
-                'user' => new AllUserResource($user),
-            ]);
-        } catch (Throwable $th) {
+        if (empty($user) || $user->role_id != 2) {
             return response()->json([
                 'status' => false,
-                'message' => $th->getMessage(),
-            ],500);
+                'message' => "User not found",
+            ], 404);
         }
 
+        return response()->json([
+            'status' => true,
+            'message' => "User has been successfully found",
+            'user' => new AllUserResource($user),
+        ]);
     }
 
     /**
