@@ -65,4 +65,21 @@ class ScreenTextController extends Controller
             ], 500);
         }
     }
+
+    public function allText()
+    {
+        try {
+            $text = ScreenText::first();
+            return response()->json([
+                'status' => true,
+                'message' => ($text->count()) . " text(s) found",
+                'data' => new AllScreenTextResource($text),
+            ]);
+        } catch (Throwable $th) {
+            return response()->json([
+                'status' => false,
+                'message' => $th->getMessage(),
+            ], 500);
+        }
+    }
 }

@@ -21,6 +21,7 @@ Route::post('/reset-password', [AuthController::class, 'resetPassword']);
 Route::post('/forgot-password', [AuthController::class, 'forgotPassword']);
 Route::post('/user', [UserController::class, 'store']);
 Route::post('/verify', [UserController::class, 'verify']);
+Route::get('/screen', [ScreenTextController::class, 'allText']);
 
 Route::middleware('auth:api')->group(function () {
 
