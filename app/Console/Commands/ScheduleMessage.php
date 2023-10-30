@@ -29,8 +29,10 @@ class ScheduleMessage extends Command
      */
     public function handle()
     {
-        $messages = Message::where('is_schedule' , false)->where('is_read' , false)->where('schedule_date', Carbon::now()->format('Y-m-d'))->get();
-        if(!empty($messages) && is_array($messages) && count($messages) > 0){
+        $date = Carbon::now()->format('Y-m-d');
+        $query = Message::where('is_schedule' , false)->where('is_read' , false);
+        $messages = $query->whereRaw("DATE(schedule_date) = '{$date}'")->get();
+        if(!empty($messages) && count($messages) > 0){
             foreach ($messages as  $message) {
                 $data = [
                     'user_id' => $message->sender_id,
