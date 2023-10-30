@@ -16,4 +16,17 @@ class Contact extends Model
     {
         return $this->belongsTo(User::class, 'user_id', 'id');
     }
+
+    protected static function boot()
+    {
+        parent::boot();
+        if(auth()->check()){
+            $user = auth()->user()->load('role');
+            if ($user->role->name == "user") {
+                static::addGlobalScope('active', function ($builder) use($user) {
+                    $builder->where('user_id', $user->id);
+                });
+            }
+        }
+    }
 }
