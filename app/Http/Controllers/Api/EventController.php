@@ -27,6 +27,8 @@ class EventController extends Controller
     {
         try {
             $query = Event::with(['user', 'contact']);
+            if (!empty($request->date))
+                $query->whereRaw("DATE(date) = '{$request->date}'");
             if (!empty($request->skip))
                 $query->skip($request->skip);
             if (!empty($request->take))

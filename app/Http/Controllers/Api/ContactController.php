@@ -24,8 +24,6 @@ class ContactController extends Controller
     {
         try {
             $query = Contact::with('user');
-            if (!empty($request->user_id))
-                $query->where('user_id', $request->user_id);
             if (!empty($request->skip))
                 $query->skip($request->skip);
             if (!empty($request->take))
