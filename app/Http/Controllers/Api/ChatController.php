@@ -105,7 +105,7 @@ class ChatController extends Controller
                 $filename = "Voice-" . time() . "-" . rand() . "." . $voice->getClientOriginalExtension();
                 $voice->storeAs('message', $filename, "public");
 
-                $messageData['message'] = "message/" . $filename;
+                $messageData['message'] = request()->getSchemeAndHttpHost() . "/storage/message/" . $filename;
                 Message::create($messageData);
             }
 
@@ -114,7 +114,7 @@ class ChatController extends Controller
                 $filename = "Video-" . time() . "-" . rand() . "." . $video->getClientOriginalExtension();
                 $video->storeAs('message', $filename, "public");
 
-                $messageData['message'] = "message/" . $filename;
+                $messageData['message'] = request()->getSchemeAndHttpHost() . "/storage/message/" . $filename;
                 Message::create($messageData);
             }
 
