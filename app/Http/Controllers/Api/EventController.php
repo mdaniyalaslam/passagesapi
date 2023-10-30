@@ -61,9 +61,10 @@ class EventController extends Controller
             $event = Event::create($inputs);
 
             $contact = Contact::where('id', $request->contact_id)->first();
-            $receiver_id = User::where('email', $contact->email)->where('is_active', 1)->first()->id;
-            if (empty($receiver_id))
+            $receiver = User::where('email', $contact->email)->where('is_active', 1)->first();
+            if (empty($receiver))
                 throw new Error('Contact not found');
+            $receiver_id = $receiver->id;
             $chat = Chat::where(function ($q) use ($user_id, $receiver_id) {
                 $q->where('sender_id', $user_id)->where('receiver_id', $receiver_id);
             })->orWhere(function ($q) use ($receiver_id, $user_id) {
