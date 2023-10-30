@@ -214,7 +214,7 @@ class UserController extends Controller
                 if (!$user->save())
                     throw new Error('Account not delete');
                 DB::commit();
-                return response()->json(['status' => true, 'message' => 'Successfully Delete Your Account']);
+                return response()->json(['status' => true, 'message' => 'Successfully Recover Your Account']);
             }
         } catch (Throwable $th) {
             DB::rollBack();

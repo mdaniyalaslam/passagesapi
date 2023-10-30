@@ -37,7 +37,7 @@ class AuthController extends Controller
         try {
             if (auth()->attempt($request->only('email', 'password'))) {
                 $user = auth()->user()->load('role');
-                if ($user->is_active == false) return response()->json(['status' => false, 'message' => 'Your Account Status has been not Active']);
+                if ($user->is_active == false) return response()->json(['status' => false, 'message' => 'Your Account Status has been not Active, Please Contact with admin']);
                 return new LoginResource(['token' => $user->createToken($user->email)->accessToken, 'user' => $user]);
             }
             throw new Error('Invalid Credentials', 412);
