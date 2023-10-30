@@ -82,7 +82,7 @@ class EventController extends Controller
             $messageData = [
                 'chat_id' => $chat->id,
                 'sender_id' => $user_id,
-                'schedule_date' => $request->date,
+                'schedule_date' => date('Y-m-d', strtotime($request->date)),
             ];
 
             if (!empty($request->name)) {
