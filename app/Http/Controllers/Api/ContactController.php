@@ -8,6 +8,7 @@ use App\Http\Requests\Contact\UpdateRequest;
 use App\Http\Resources\Contact\AllContactResource;
 use App\Models\Contact;
 use App\Models\Log;
+use App\Models\User;
 use Carbon\Carbon;
 use Error;
 use Illuminate\Http\Request;
@@ -51,6 +52,9 @@ class ContactController extends Controller
     {
         try {
             DB::beginTransaction();
+            $user = User::where('email', $request->email)->where('is_active', 1)->first();
+            if (empty($user))
+                throw new Error('First tell the person to register on this app and then you can add them');
             $inputs = $request->except(
                 'user_id',
                 'image',

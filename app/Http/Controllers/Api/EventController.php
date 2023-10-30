@@ -63,7 +63,7 @@ class EventController extends Controller
             $contact = Contact::where('id', $request->contact_id)->first();
             $receiver = User::where('email', $contact->email)->where('is_active', 1)->first();
             if (empty($receiver))
-                throw new Error('Contact not found');
+                throw new Error('First tell the person to register on this app and then you can add them');
             $receiver_id = $receiver->id;
             $chat = Chat::where(function ($q) use ($user_id, $receiver_id) {
                 $q->where('sender_id', $user_id)->where('receiver_id', $receiver_id);
