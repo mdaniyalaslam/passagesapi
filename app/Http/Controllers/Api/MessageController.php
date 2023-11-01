@@ -71,7 +71,7 @@ class MessageController extends Controller
                 'gift_id' => $request->gift_id ?? null,
                 'message' => $request->message ?? '',
                 'video' => $request->video ?? '',
-                'is_draft' => (!empty($request->draft) && $request->draft == true) ? 1 : 0,
+                'is_draft' => (!empty($request->draft) && $request->draft == 1) ? 1 : 0,
                 'schedule_date' => date('Y-m-d', strtotime($request->date)),
             ];
 
