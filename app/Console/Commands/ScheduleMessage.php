@@ -2,6 +2,8 @@
 
 namespace App\Console\Commands;
 
+use App\Http\Controllers\Api\NotiSend;
+use App\Models\AppNotification;
 use App\Models\Message;
 use Carbon\Carbon;
 use Error;
@@ -29,13 +31,21 @@ class ScheduleMessage extends Command
     public function handle()
     {
         $date = Carbon::now()->format('Y-m-d');
-        $query = Message::where('is_schedule' , false)->where('is_read' , false);
+        $query = Message::where('is_schedule' , 0)->where('is_read' , 0)->where('is_draft' , 0);
         $messages = $query->whereRaw("DATE(schedule_date) = '{$date}'")->get();
         if(!empty($messages) && count($messages) > 0){
             foreach ($messages as  $message) {
                 $message->is_schedule = true;
                 if (!$message->save()) throw new Error("Message not schedule");
             }
+            // $title = 'New Message';
+            // $message = 'You have recieved new message';
+            // $appnot = new AppNotification();
+            // $appnot->user_id = $user->id;
+            // $appnot->notification = $message;
+            // $appnot->navigation = $title;
+            // $appnot->save();
+            // NotiSend::sendNotif($user->device_token, '', $title, $message);
         }
     }
 }
