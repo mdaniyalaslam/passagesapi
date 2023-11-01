@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Requests\Chat;
+namespace App\Http\Requests\Message;
 
 use Illuminate\Foundation\Http\FormRequest;
 
@@ -24,6 +24,9 @@ class MessageRequest extends FormRequest
         return [
             'contact_id' => 'required|exists:contacts,id',
             'message' => 'required',
+            'video' => 'nullable',
+            'voice' => 'nullable',
+            'gift_id' => 'nullable|exists:gifts,id',
             'date' => 'required',
         ];
     }
@@ -33,6 +36,9 @@ class MessageRequest extends FormRequest
         return [
             'contact_id' => 'Contact',
             'message' => 'Message',
+            'video' => 'Video',
+            'voice' => 'Voice',
+            'gift_id' => 'Gift',
             'date' => 'Date',
         ];
     }

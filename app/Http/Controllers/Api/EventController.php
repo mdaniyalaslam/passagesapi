@@ -6,7 +6,6 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\Event\StoreRequest;
 use App\Http\Requests\Event\UpdateRequest;
 use App\Http\Resources\Event\AllEventResource;
-use App\Models\Chat;
 use App\Models\Contact;
 use App\Models\Event;
 use App\Models\Log;
@@ -63,39 +62,21 @@ class EventController extends Controller
             $event = Event::create($inputs);
 
             $contact = Contact::where('id', $request->contact_id)->first();
+            if (empty($contact))
+                throw new Error('Contact not found');
             $receiver = User::where('email', $contact->email)->where('is_active', 1)->first();
             if (empty($receiver))
-                throw new Error('First tell the person to register on this app and then you can add them');
-            $receiver_id = $receiver->id;
-            $chat = Chat::where(function ($q) use ($user_id, $receiver_id) {
-                $q->where('sender_id', $user_id)->where('receiver_id', $receiver_id);
-            })->orWhere(function ($q) use ($receiver_id, $user_id) {
-                $q->where('sender_id', $receiver_id)->where('receiver_id', $user_id);
-            })->first();
-
-            if (!is_object($chat)) {
-                $chat = new Chat();
-                $chat->sender_id = $user_id;
-                $chat->receiver_id = $receiver_id;
-                if (!$chat->save())
-                    throw new Error("Chat not save!");
-            }
+                throw new Error('First tell the person to register on this app and then you can add event');
 
             $messageData = [
-                'chat_id' => $chat->id,
-                'sender_id' => $user_id,
+                'user_id' => $user_id ?? '',
+                'contact_id' => $request->contact_id ?? '',
+                'event_name' => $request->name ?? '',
+                'event_desc' => $request->desc ?? '',
                 'schedule_date' => date('Y-m-d', strtotime($request->date)),
             ];
 
-            if (!empty($request->name)) {
-                $messageData['message'] = $request->name;
-                Message::create($messageData);
-            }
-
-            if (!empty($request->desc)) {
-                $messageData['message'] = $request->desc;
-                Message::create($messageData);
-            }
+            Message::create($messageData);
 
             $today_date = Carbon::now();
             $logs = new Log();
