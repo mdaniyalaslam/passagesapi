@@ -28,6 +28,7 @@ class MessageRequest extends FormRequest
             'voice' => 'nullable',
             'gift_id' => 'nullable|exists:gifts,id',
             'date' => 'required',
+            'draft' => 'nullable',
         ];
     }
 
@@ -40,6 +41,7 @@ class MessageRequest extends FormRequest
             'voice' => 'Voice',
             'gift_id' => 'Gift',
             'date' => 'Date',
+            'draft' => 'Draft',
         ];
     }
 }
