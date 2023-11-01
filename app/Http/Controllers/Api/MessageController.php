@@ -64,7 +64,7 @@ class MessageController extends Controller
             $messageData = [
                 'user_id' => $user_id ?? '',
                 'contact_id' => $request->contact_id ?? '',
-                'gift_id' => $request->gift_id ?? '',
+                'gift_id' => $request->gift_id ?? null,
                 'message' => $request->message ?? '',
                 'video' => $request->video ?? '',
                 'schedule_date' => date('Y-m-d', strtotime($request->date)),
