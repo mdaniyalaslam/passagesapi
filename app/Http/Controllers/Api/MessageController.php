@@ -83,13 +83,13 @@ class MessageController extends Controller
                 $messageData['voice'] = request()->getSchemeAndHttpHost() . "/storage/message/" . $filename;
             }
 
-            $messsage = Message::create($messageData);
+            $message = Message::create($messageData);
 
             DB::commit();
             return response()->json([
                 'status' => true,
                 'message' => "Message Send Successfully",
-                'messages' => new AllMessageResource($messsage)
+                'messages' => new AllMessageResource($message)
             ]);
         } catch (Throwable $th) {
             DB::rollBack();
@@ -122,10 +122,56 @@ class MessageController extends Controller
 
     /**
      * Update the specified resource in storage.
+     * @param  \App\Http\Requests\Message\MessageRequest  $request
      */
-    public function update(Request $request, Message $message)
+    public function update(MessageRequest $request, Message $message)
     {
-        //
+        try {
+            DB::beginTransaction();
+            $user_id = auth()->user()->id;
+            $contact = Contact::where('id', $request->contact_id)->first();
+            if (empty($contact))
+                throw new Error('Contact not found');
+            $receiver = User::where('email', $contact->email)->where('is_active', 1)->first();
+            if (empty($receiver))
+                throw new Error('First tell the person to register on this app and then you can add event');
+
+            $messageData = [
+                'user_id' => $user_id ?? '',
+                'contact_id' => $request->contact_id ?? '',
+                'gift_id' => $request->gift_id ?? null,
+                'message' => $request->message ?? '',
+                'video' => $request->video ?? '',
+                'is_draft' => 0,
+                'is_schedule' => 0,
+                'is_read' => 0,
+                'schedule_date' => date('Y-m-d', strtotime($request->date)),
+            ];
+
+            if (!empty($request->voice)) {
+                if (!empty($message->voice) && file_exists(public_path('storage/' . $message->voice))) unlink(public_path('storage/' . $message->voice));
+                $voice = $request->voice;
+                $filename = "Voice-" . time() . "-" . rand() . "." . $voice->getClientOriginalExtension();
+                $voice->storeAs('message', $filename, "public");
+
+                $messageData['voice'] = request()->getSchemeAndHttpHost() . "/storage/message/" . $filename;
+            }
+
+            $message->update($messageData);
+
+            DB::commit();
+            return response()->json([
+                'status' => true,
+                'message' => "Message Send Successfully",
+                'messages' => new AllMessageResource($message)
+            ]);
+        } catch (Throwable $th) {
+            DB::rollBack();
+            return response()->json([
+                'status' => false,
+                'message' => $th->getMessage()
+            ], 500);
+        }
     }
 
     /**
