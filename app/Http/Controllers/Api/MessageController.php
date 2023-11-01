@@ -8,6 +8,7 @@ use App\Http\Resources\Message\AllMessageResource;
 use App\Models\Contact;
 use App\Models\Message;
 use App\Models\User;
+use Carbon\Carbon;
 use Error;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -22,15 +23,18 @@ class MessageController extends Controller
     {
         try {
             $user_id = auth()->user()->id;
+            $date = $request->date ?? Carbon::now()->format('Y-m-d');
             $query = Message::with(['user', 'contact', 'gift']);
-            if (!empty($request->tab == 'draft'))
+            if (!empty($request->tab) && $request->tab == 'draft')
                 $query->where('user_id', $user_id)->where('is_schedule', 0)->where('is_draft', 1);
-            if (!empty($request->tab == 'schedule'))
+            if (!empty($request->tab) && $request->tab == 'schedule')
                 $query->where('user_id', $user_id)->where('is_schedule', 0)->where('is_draft', 0);
-            if (!empty($request->tab == 'receive'))
-                $query->where('contact_id', $user_id)->where('is_schedule', 1)->where('is_draft', 0);
-            if (!empty($request->tab == 'sent'))
+            if (!empty($request->tab) && $request->tab == 'sent')
                 $query->where('user_id', $user_id)->where('is_schedule', 1)->where('is_draft', 0);
+            if (!empty($request->tab) && $request->tab == 'receive')
+                $query->where('contact_id', $user_id)->where('is_schedule', 1)->where('is_draft', 0);
+            if (!empty($request->date))
+                $query->whereRaw("DATE(schedule_date) = '{$date}'");
             $messages = $query->orderBy('id', 'DESC')->get();
             return response()->json([
                 'status' => true,
