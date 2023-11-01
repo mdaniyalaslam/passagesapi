@@ -88,7 +88,7 @@ class MessageController extends Controller
             return response()->json([
                 'status' => true,
                 'message' => "Message Send Successfully",
-                'message' => new AllMessageResource($messsage)
+                'messages' => new AllMessageResource($messsage)
             ]);
         } catch (Throwable $th) {
             DB::rollBack();
@@ -99,12 +99,24 @@ class MessageController extends Controller
         }
     }
 
-    /**
+   /**
      * Display the specified resource.
+     * @param  \App\Models\Message $message
      */
     public function show(Message $message)
     {
-        //
+        if (empty($message)) {
+            return response()->json([
+                'status' => false,
+                'message' => "Message not found",
+            ], 404);
+        }
+
+        return response()->json([
+            'status' => true,
+            'message' => "Message has been successfully found",
+            'messages' => new AllMessageResource($message->load(['user', 'contact', 'gift'])),
+        ]);
     }
 
     /**
