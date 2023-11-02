@@ -181,4 +181,26 @@ class MessageController extends Controller
     {
         //
     }
+
+    public function read($id)
+    {
+        try {
+            DB::beginTransaction();
+            $message = Message::where('id' , $id)->first();
+            $message->is_read = 1;
+            $message->save();
+
+            DB::commit();
+            return response()->json([
+                'status' => true,
+                'message' => "Message Read Successfully",
+            ]);
+        } catch (Throwable $th) {
+            DB::rollBack();
+            return response()->json([
+                'status' => false,
+                'message' => $th->getMessage()
+            ], 500);
+        }
+    }
 }
