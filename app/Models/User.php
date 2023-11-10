@@ -26,6 +26,9 @@ class User extends Authenticatable
         'account_id',
         'family_name',
         'given_name',
+        'phone',
+        'gender',
+        'dob',
         'is_active',
         'image',
         'remember_token'

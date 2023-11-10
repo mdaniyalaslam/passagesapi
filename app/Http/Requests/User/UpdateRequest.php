@@ -24,6 +24,9 @@ class UpdateRequest extends FormRequest
         return [
             'full_name' => "required",
             'email' => "required|email|unique:users,email," . $this->route('user')->id,
+            'phone' => "nullable",
+            'gender' => "nullable",
+            'dob' => "nullable",
         ];
     }
 
@@ -32,6 +35,9 @@ class UpdateRequest extends FormRequest
         return [
             'full_name' => "Full name",
             'email' => "Email",
+            'phone' => "Phone",
+            'gender' => "Gender",
+            'dob' => "Date of Birth",
         ];
     }
 }

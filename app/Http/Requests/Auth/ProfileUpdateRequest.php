@@ -25,6 +25,9 @@ class ProfileUpdateRequest extends FormRequest
             'full_name' => "required",
             'email' => "required|email|unique:users,email," . auth()->user()->id,
             'image' => "nullable|image|mimes:png,jpg,jpeg",
+            'phone' => "nullable",
+            'gender' => "nullable",
+            'dob' => "nullable",
         ];
     }
 
@@ -34,6 +37,9 @@ class ProfileUpdateRequest extends FormRequest
             'full_name' => "Full name",
             'email' => "Email",
             'image' => "Image",
+            'phone' => "Phone",
+            'gender' => "Gender",
+            'dob' => "Date of Birth",
         ];
     }
 }

@@ -22,6 +22,9 @@ return new class extends Migration
             $table->string('account_id')->nullable();
             $table->string('family_name')->nullable();
             $table->string('given_name')->nullable();
+            $table->string('phone')->nullable();
+            $table->string('gender')->nullable();
+            $table->dateTime('dob')->nullable();
             $table->boolean('is_active')->default(false);
             $table->string('image')->nullable();
             $table->rememberToken();
