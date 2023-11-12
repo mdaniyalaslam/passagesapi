@@ -28,6 +28,7 @@ Route::middleware('auth:api')->group(function () {
     Route::get('/current-user', [AuthController::class, 'currentUser']);
     Route::post('/profile-update', [AuthController::class, 'profileUpdate']);
     Route::post('/change-password', [AuthController::class, 'changePassword']);
+    Route::post('/verify-password', [AuthController::class, 'verifyPassword']);
 
     //Screen Text
     Route::get('/screen-text', [ScreenTextController::class, 'index']);

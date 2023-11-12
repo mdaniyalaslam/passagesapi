@@ -7,6 +7,7 @@ use App\Http\Requests\Auth\ChangePasswordRequest;
 use App\Http\Requests\Auth\LoginRequest;
 use App\Http\Requests\Auth\ProfileUpdateRequest;
 use App\Http\Requests\Auth\ResetPasswordRequest;
+use App\Http\Requests\Auth\VerifyRequest;
 use App\Http\Resources\Auth\LoginResource;
 use App\Http\Resources\UserResource;
 use App\Models\User;
@@ -151,5 +152,16 @@ class AuthController extends Controller
                 'message' => $th->getMessage(),
             ], 500);
         }
+    }
+
+    public function verifyPassword(VerifyRequest $request)
+    {
+        $user = User::where('email', auth()->user()->email)->first();
+
+        if (!$user || !Hash::check($request->password, $user->password)) {
+            return response()->json(['message' => 'Password not valid'], 500);
+        }
+
+        return response()->json(['message' => 'Password is valid'], 200);
     }
 }
