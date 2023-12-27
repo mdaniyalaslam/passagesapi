@@ -7,7 +7,7 @@ use App\Http\Requests\Auth\ChangePasswordRequest;
 use App\Http\Requests\Auth\LoginRequest;
 use App\Http\Requests\Auth\ProfileUpdateRequest;
 use App\Http\Requests\Auth\ResetPasswordRequest;
-use App\Http\Requests\Auth\VerifyRequest;
+use App\Http\Requests\Auth\VerifyPassword;
 use App\Http\Resources\Auth\LoginResource;
 use App\Http\Resources\UserResource;
 use App\Models\User;
@@ -154,7 +154,7 @@ class AuthController extends Controller
         }
     }
 
-    public function verifyPassword(VerifyRequest $request)
+    public function verifyPassword(VerifyPassword $request)
     {
         $user = User::where('email', auth()->user()->email)->first();
 
