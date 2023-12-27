@@ -2,7 +2,7 @@
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\Api\{AuthController, MessageController, ContactController, EventController, GiftController, LogController, OcassionController, PaymentController, ScreenTextController, ToneController, UserController};
+use App\Http\Controllers\Api\{AuthController, MessageController, ContactController, EventController, GiftController, HelpController, LogController, OcassionController, PaymentController, ScreenTextController, ToneController, UserController};
 
 /*
 |--------------------------------------------------------------------------
@@ -51,6 +51,7 @@ Route::middleware('auth:api')->group(function () {
         'tone' => ToneController::class,
         'gift' => GiftController::class,
         'message' => MessageController::class,
+        'help' => HelpController::class,
     ]);
 
     //Gift Payment
