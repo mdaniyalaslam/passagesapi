@@ -17,7 +17,7 @@ class AllPolicyResource extends JsonResource
         return [
             'id' => $this->id ?? '',
             'content' => $this->content ?? '',
-            'updated_at' => (!empty($this->updated_at)) ? date('Y-m-d H:i:s', strtotime($this->updated_at)) : '',
+            'updated_at' => (!empty($this->updated_at)) ? date('M d, Y h:i A', strtotime($this->updated_at)) : '',
         ];
     }
 }
