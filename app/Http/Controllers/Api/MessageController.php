@@ -33,6 +33,8 @@ class MessageController extends Controller
                 $query->where('user_id', $user_id)->where('is_schedule', 1)->where('is_draft', 0);
             if (!empty($request->tab) && $request->tab == 'receive')
                 $query->where('contact_id', $user_id)->where('is_schedule', 1)->where('is_draft', 0);
+            if (!empty($request->tab) && $request->tab == 'early_access')
+                $query->where('contact_id', $user_id)->where('is_schedule', 0)->where('is_draft', 0);
             if (!empty($request->date))
                 $query->whereRaw("DATE(schedule_date) = '{$date}'");
             $messages = $query->orderBy('id', 'DESC')->get();
