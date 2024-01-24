@@ -22,7 +22,7 @@ class ScreenTextController extends Controller
             $text = ScreenText::first();
             return response()->json([
                 'status' => true,
-                'message' => ($text->count()) . " text(s) found",
+                'message' => (($text) ? $text->count() : 0) . " text(s) found",
                 'data' => new AllScreenTextResource($text),
             ]);
         } catch (Throwable $th) {
@@ -40,9 +40,7 @@ class ScreenTextController extends Controller
     {
         try {
             DB::beginTransaction();
-            $text = ScreenText::first();
-            if (empty($text))
-                $text = new ScreenText();
+            $text = ScreenText::firstOrNew();
             $text->title1 = $request->title1;
             $text->desc1 = $request->desc1;
             $text->title2 = $request->title2;
@@ -72,7 +70,7 @@ class ScreenTextController extends Controller
             $text = ScreenText::first();
             return response()->json([
                 'status' => true,
-                'message' => ($text->count()) . " text(s) found",
+                'message' => (($text) ? $text->count() : 0) . " text(s) found",
                 'data' => new AllScreenTextResource($text),
             ]);
         } catch (Throwable $th) {

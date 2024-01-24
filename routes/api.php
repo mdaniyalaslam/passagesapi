@@ -2,7 +2,21 @@
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\Api\{AuthController, MessageController, ContactController, EventController, GiftController, HelpController, LogController, OcassionController, PaymentController, ScreenTextController, ToneController, UserController};
+use App\Http\Controllers\Api\{
+    AuthController,
+    MessageController,
+    ContactController,
+    EventController,
+    GiftController,
+    HelpController,
+    LogController,
+    OcassionController,
+    PaymentController,
+    PolicyController,
+    ScreenTextController,
+    ToneController,
+    UserController
+};
 
 /*
 |--------------------------------------------------------------------------
@@ -21,6 +35,7 @@ Route::post('/forgot-password', [AuthController::class, 'forgotPassword']);
 Route::post('/user', [UserController::class, 'store']);
 Route::post('/verify', [UserController::class, 'verify']);
 Route::get('/screen', [ScreenTextController::class, 'allText']);
+Route::get('/privacy-policy', [PolicyController::class, 'index']);
 
 Route::middleware('auth:api')->group(function () {
 
@@ -33,6 +48,9 @@ Route::middleware('auth:api')->group(function () {
     //Screen Text
     Route::get('/screen-text', [ScreenTextController::class, 'index']);
     Route::post('/screen-text', [ScreenTextController::class, 'store_or_update']);
+
+    //Privacy Policy
+    Route::post('/privacy-policy', [PolicyController::class, 'store_or_update']);
 
     //user
     Route::get('/status/{id}', [UserController::class, 'status_change']);
