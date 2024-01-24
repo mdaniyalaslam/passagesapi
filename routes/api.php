@@ -14,6 +14,7 @@ use App\Http\Controllers\Api\{
     PaymentController,
     PolicyController,
     ScreenTextController,
+    TermsController,
     ToneController,
     UserController
 };
@@ -36,6 +37,7 @@ Route::post('/user', [UserController::class, 'store']);
 Route::post('/verify', [UserController::class, 'verify']);
 Route::get('/screen', [ScreenTextController::class, 'allText']);
 Route::get('/privacy-policy', [PolicyController::class, 'index']);
+Route::get('/term-condition', [TermsController::class, 'index']);
 
 Route::middleware('auth:api')->group(function () {
 
@@ -51,6 +53,9 @@ Route::middleware('auth:api')->group(function () {
 
     //Privacy Policy
     Route::post('/privacy-policy', [PolicyController::class, 'store_or_update']);
+
+    // Term Condition
+    Route::post('/term-condition', [TermsController::class, 'store_or_update']);
 
     //user
     Route::get('/status/{id}', [UserController::class, 'status_change']);
