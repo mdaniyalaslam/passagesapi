@@ -28,6 +28,20 @@ class MessageController extends Controller
                 throw new Error('Contact not found');
             $date = $request->date ?? Carbon::now()->format('Y-m-d');
             $query = Message::with(['user', 'contact', 'gift']);
+            
+            $subQuery = Message::selectRaw('MAX(id) as max_id')
+            ->groupBy('user_id', 'contact_id')
+            ->whereRaw("DATE(schedule_date) = '{$date}'")
+            ->toSql();
+
+            $query->whereIn('id', function ($subquery) use ($subQuery, $user_id, $contact_id) {
+                $subquery->selectRaw('max_id')
+                    ->from(\DB::raw("($subQuery) as sub_query"))
+                    ->where(function ($query) use ($user_id, $contact_id) {
+                        $query->where('user_id', $user_id)->orWhere('contact_id', $contact_id);
+                    });
+            });
+            
             if (!empty($request->tab) && $request->tab == 'draft')
                 $query->where('user_id', $user_id)->where('is_schedule', 0)->where('is_draft', 1);
             if (!empty($request->tab) && $request->tab == 'schedule')
@@ -38,8 +52,7 @@ class MessageController extends Controller
                 $query->where('contact_id', $contact_id)->where('is_schedule', 1)->where('is_draft', 0);
             if (!empty($request->tab) && $request->tab == 'early_access')
                 $query->where('contact_id', $contact_id)->where('is_schedule', 0)->where('is_draft', 0);
-            if (!empty($request->date))
-                $query->whereRaw("DATE(schedule_date) = '{$date}'");
+               
             $messages = $query->orderBy('id', 'DESC')->get();
             return response()->json([
                 'status' => true,
