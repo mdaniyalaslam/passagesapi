@@ -51,10 +51,16 @@ class UserController extends Controller
             DB::beginTransaction();
             $token = mt_rand(000001, 999999);
             $inputs = $request->except(
-                'role_id',
+                'role_id','image'
             );
             $inputs['role_id'] = 2;
             $inputs['remember_token'] = $token;
+            if (!empty($request->image)) {
+                $image = $request->image;
+                $filename = "Image-" . time() . "-" . rand() . "." . $image->getClientOriginalExtension();
+                $image->storeAs('user', $filename, "public");
+                $inputs['image'] = "user/" . $filename;
+            }
             $user = User::create($inputs);
             Mail::send('mail.verify', ['user' => $user], function ($message) use ($user) {
                 $message->to($user->email, $user->name);

@@ -25,6 +25,8 @@ class StoreRequest extends FormRequest
             'full_name' => "required",
             'email' => "required|email|unique:users,email",
             'password' => "required|confirmed",
+            'phone' => "nullable",
+            'image' => "nullable",
         ];
     }
 
@@ -34,6 +36,8 @@ class StoreRequest extends FormRequest
             'full_name' => "Full name",
             'email' => "Email",
             'password' => "Password",
+            'phone' => "Phone",
+            'image' => "Image",
         ];
     }
 }

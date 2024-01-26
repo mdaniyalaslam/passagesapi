@@ -27,6 +27,7 @@ class UpdateRequest extends FormRequest
             'phone' => "nullable",
             'gender' => "nullable",
             'dob' => "nullable",
+            'image' => "nullable",
         ];
     }
 
@@ -38,6 +39,7 @@ class UpdateRequest extends FormRequest
             'phone' => "Phone",
             'gender' => "Gender",
             'dob' => "Date of Birth",
+            'image' => "Image",
         ];
     }
 }
