@@ -23,6 +23,9 @@ class MessageController extends Controller
     {
         try {
             $user_id = auth()->user()->id;
+            $contact_id = Contact::withoutGlobalScope('active')->where('email', auth()->user()->email)->value('id');
+            if (empty($contact_id))
+                throw new Error('Contact not found');
             $date = $request->date ?? Carbon::now()->format('Y-m-d');
             $query = Message::with(['user', 'contact', 'gift']);
             if (!empty($request->tab) && $request->tab == 'draft')
@@ -32,9 +35,9 @@ class MessageController extends Controller
             if (!empty($request->tab) && $request->tab == 'sent')
                 $query->where('user_id', $user_id)->where('is_schedule', 1)->where('is_draft', 0);
             if (!empty($request->tab) && $request->tab == 'receive')
-                $query->where('contact_id', $user_id)->where('is_schedule', 1)->where('is_draft', 0);
+                $query->where('contact_id', $contact_id)->where('is_schedule', 1)->where('is_draft', 0);
             if (!empty($request->tab) && $request->tab == 'early_access')
-                $query->where('contact_id', $user_id)->where('is_schedule', 0)->where('is_draft', 0);
+                $query->where('contact_id', $contact_id)->where('is_schedule', 0)->where('is_draft', 0);
             if (!empty($request->date))
                 $query->whereRaw("DATE(schedule_date) = '{$date}'");
             $messages = $query->orderBy('id', 'DESC')->get();
@@ -62,10 +65,10 @@ class MessageController extends Controller
             $user_id = auth()->user()->id;
             $contact = Contact::where('id', $request->contact_id)->first();
             if (empty($contact))
-                throw new Error('Contact not found');
+                throw new Error(404,'Contact not found');
             $receiver = User::where('email', $contact->email)->where('is_active', 1)->first();
             if (empty($receiver))
-                throw new Error('First tell the person to register on this app and then you can add event');
+                throw new Error(422,'First tell the person must register on this app before you can add an event');
 
             $messageData = [
                 'user_id' => $user_id ?? '',
