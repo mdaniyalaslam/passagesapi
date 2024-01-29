@@ -70,7 +70,7 @@ class EventController extends Controller
 
             $messageData = [
                 'user_id' => $user_id ?? '',
-                'contact_id' => $request->contact_id ?? '',
+                'receiver_id' => $receiver->id ?? '',
                 'event_name' => $request->name ?? '',
                 'event_desc' => $request->desc ?? '',
                 'schedule_date' => date('Y-m-d', strtotime($request->date)),

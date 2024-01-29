@@ -82,4 +82,6 @@ Route::middleware('auth:api')->group(function () {
 
     //Message
     Route::get('/message-read/{id}', [MessageController::class, 'read']);
+    Route::get('/all-messages', [MessageController::class, 'all_messages']);
+    Route::post('/message-sent', [MessageController::class, 'message_sent']);
 });

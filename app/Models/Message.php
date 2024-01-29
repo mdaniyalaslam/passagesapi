@@ -10,11 +10,10 @@ class Message extends Model
     use HasFactory;
     protected $fillable = [
         'user_id',
-        'contact_id',
+        'receiver_id',
         'gift_id',
         'message',
-        'video',
-        'voice',
+        'type',
         'event_name',
         'event_desc',
         'schedule_date',
@@ -28,9 +27,9 @@ class Message extends Model
         return $this->belongsTo(User::class, 'user_id', 'id');
     }
 
-    public function contact()
+    public function receiver()
     {
-        return $this->belongsTo(Contact::class, 'contact_id', 'id');
+        return $this->belongsTo(User::class, 'receiver_id', 'id');
     }
 
     public function gift()

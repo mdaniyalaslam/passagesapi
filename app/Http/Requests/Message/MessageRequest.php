@@ -22,10 +22,10 @@ class MessageRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'contact_id' => 'required|exists:contacts,id',
+            'contact_id' => 'required_without:receiver_id|exists:contacts,id',
+            'receiver_id' => 'required_without:contact_id|exists:users,id',
             'message' => 'required',
-            'video' => 'nullable',
-            'voice' => 'nullable',
+            'type' => 'required|in:image,voice,video,message',
             'gift_id' => 'nullable|exists:gifts,id',
             'date' => 'required',
             'draft' => 'nullable',
@@ -36,9 +36,11 @@ class MessageRequest extends FormRequest
     {
         return [
             'contact_id' => 'Contact',
+            'receiver_id' => 'Receiver',
             'message' => 'Message',
             'video' => 'Video',
             'voice' => 'Voice',
+            'image' => 'Image',
             'gift_id' => 'Gift',
             'date' => 'Date',
             'draft' => 'Draft',
