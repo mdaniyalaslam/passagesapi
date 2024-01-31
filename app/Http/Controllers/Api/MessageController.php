@@ -100,7 +100,9 @@ class MessageController extends Controller
             if (!empty($request->tab) && $request->tab == 'draft')
                 $query->where('user_id', $user_id)->where('is_schedule', 0)->where('is_draft', 1);
             if (!empty($request->tab) && $request->tab == 'schedule')
-                $query->where('user_id', $user_id)->where('is_draft', 0);
+                $query->where(function ($query) use ($user_id, $receiver_id) {
+                    $query->where('user_id', $user_id)->orWhere('receiver_id', $user_id)->where('is_schedule', 1)->where('is_draft', 0);
+                });
             if (!empty($request->tab) && $request->tab == 'sent')
                 $query->where('is_schedule', 1)->where('is_draft', 0);
             if (!empty($request->tab) && $request->tab == 'receive')
