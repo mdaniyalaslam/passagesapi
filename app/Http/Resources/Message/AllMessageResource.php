@@ -22,10 +22,14 @@ class AllMessageResource extends JsonResource
             'id' => $this->id,
             'user_id' => $this->user_id ?? '',
             'receiver_id' => $this->receiver_id ?? '',
-            'message' => ($this->type == 'message') ? $this->message : request()->getSchemeAndHttpHost() . '/storage/' . $this->message,
             'type' => $this->type ?? '',
-            'event_name' => $this->event_name ?? '',
-            'event_desc' => $this->event_desc ?? '',
+            $this->mergeWhen((!empty($this->type) && $this->type != 'event'), [
+                'message' => ($this->type == 'message') ? $this->message : request()->getSchemeAndHttpHost() . '/storage/' . $this->message,
+            ]),
+            $this->mergeWhen((!empty($this->type) && $this->type == 'event'), [
+                'event_name' => $this->event_name ?? '',
+                'event_desc' => $this->event_desc ?? '',
+            ]),
             'date' => date('Y-m-d', strtotime($this->schedule_date)) ?? '',
             'is_read' => ($this->is_read) ? 1 : 0,
             'is_schedule' => ($this->is_schedule) ? 1 : 0,

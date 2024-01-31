@@ -73,6 +73,7 @@ class EventController extends Controller
                 'receiver_id' => $receiver->id ?? '',
                 'event_name' => $request->name ?? '',
                 'event_desc' => $request->desc ?? '',
+                'type' => 'event',
                 'schedule_date' => date('Y-m-d', strtotime($request->date)),
             ];
 

@@ -17,7 +17,7 @@ return new class extends Migration
             $table->unsignedBigInteger('receiver_id')->nullable();
             $table->unsignedBigInteger('gift_id')->nullable();
             $table->text('message')->nullable();
-            $table->enum('type', ['image', 'voice', 'video', 'message']);
+            $table->enum('type', ['image', 'voice', 'video', 'message', 'event']);
             $table->text('event_name')->nullable();
             $table->text('event_desc')->nullable();
             $table->dateTime('schedule_date')->nullable();
