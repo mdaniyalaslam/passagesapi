@@ -51,7 +51,7 @@ class ContactController extends Controller
         try {
             DB::beginTransaction();
             $user = User::where('email', $request->email)->where('is_active', 1)->first();
-            if (empty($user))
+            if (empty($user) || $user->role_id == 1)
                 throw new Error('First tell the person to register on this app and then you can add them');
             $inputs = $request->except(
                 'user_id',
@@ -124,6 +124,9 @@ class ContactController extends Controller
 
         try {
             DB::beginTransaction();
+            $user = User::where('email', $request->email)->where('is_active', 1)->first();
+            if (empty($user) || $user->role_id == 1)
+                throw new Error('First tell the person to register on this app and then you can add them');
             $inputs = $request->except(
                 'image',
             );
