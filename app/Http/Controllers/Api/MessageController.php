@@ -243,7 +243,6 @@ class MessageController extends Controller
                 'gift_id' => $request->gift_id ?? null,
                 'is_draft' => (!empty($request->draft) && $request->draft == 1) ? 1 : 0,
                 'is_schedule' => (!empty($request->draft) && $request->draft == 1) ? 0 : 1,
-                'is_read' => (!empty($request->draft) && $request->draft == 1) ? 0 : 1,
                 'schedule_date' => date('Y-m-d', strtotime($request->date)),
             ];
             $type = $request->type ?? '';
@@ -406,14 +405,18 @@ class MessageController extends Controller
         //
     }
 
-    public function read($id)
+    public function read()
     {
         try {
             DB::beginTransaction();
-            $message = Message::where('id', $id)->first();
-            $message->is_read = 1;
-            $message->save();
-
+            $user_id = auth()->user()->id;
+            $messages = Message::where('receiver_id', $user_id)->where('is_schedule' , 1)->get();
+            if(!empty($messages) && count($messages) > 0){
+                foreach($messages as $message){
+                    $message->is_read = 1;
+                    $message->save();
+                }
+            }
             DB::commit();
             return response()->json([
                 'status' => true,
