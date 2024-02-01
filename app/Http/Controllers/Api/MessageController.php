@@ -244,6 +244,7 @@ class MessageController extends Controller
                 'is_draft' => (!empty($request->draft) && $request->draft == 1) ? 1 : 0,
                 'is_schedule' => (!empty($request->draft) && $request->draft == 1) ? 0 : 1,
                 'schedule_date' => date('Y-m-d', strtotime($request->date)),
+                'type' => $request->type,
             ];
             $type = $request->type ?? '';
             if (empty($type) || empty($request->message))
