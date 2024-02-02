@@ -132,7 +132,7 @@ class MessageController extends Controller
     {
         try {
             DB::beginTransaction();
-            $message = '';
+
             $user_id = auth()->user()->id;
             $contact = Contact::where('id', $request->contact_id)->first();
             if (empty($contact))
@@ -152,11 +152,13 @@ class MessageController extends Controller
                 'is_draft' => (!empty($request->draft) && $request->draft == 1) ? 1 : 0,
                 'schedule_date' => date('Y-m-d', strtotime($request->date)),
             ];
+            $messages = []; // Initialize an array to store messages
 
 
             if ($type == 'message') {
                 $messageData['message'] = $request->message ?? '';
                 $message = Message::create($messageData);
+                $messages[]['id'] = $message->id;
             }
 
             if ($type == 'voice') {
@@ -167,6 +169,8 @@ class MessageController extends Controller
                         $voice->storeAs('voice', $filename, "public");
                         $messageData['message'] = "voice/" . $filename;
                         $message = Message::create($messageData);
+                        $messages[]['id'] = $message->id;
+
                     }
                 } else {
                     $voice = $request->message;
@@ -174,6 +178,8 @@ class MessageController extends Controller
                     $voice->storeAs('voice', $filename, "public");
                     $messageData['message'] = "voice/" . $filename;
                     $message = Message::create($messageData);
+                    $messages[]['id'] = $message->id;
+
                 }
             }
 
@@ -185,6 +191,8 @@ class MessageController extends Controller
                         $image->storeAs('image', $filename, "public");
                         $messageData['message'] = "image/" . $filename;
                         $message = Message::create($messageData);
+                        $messages[]['id'] = $message->id;
+
                     }
                 } else {
                     $image = $request->message;
@@ -192,6 +200,8 @@ class MessageController extends Controller
                     $image->storeAs('image', $filename, "public");
                     $messageData['message'] = "image/" . $filename;
                     $message = Message::create($messageData);
+                    $messages[]['id'] = $message->id;
+
                 }
             }
 
@@ -203,6 +213,8 @@ class MessageController extends Controller
                         $video->storeAs('video', $filename, "public");
                         $messageData['message'] = "video/" . $filename;
                         $message = Message::create($messageData);
+                        $messages[]['id'] = $message->id;
+
                     }
                 } else {
                     $video = $request->message;
@@ -210,14 +222,17 @@ class MessageController extends Controller
                     $video->storeAs('video', $filename, "public");
                     $messageData['message'] = "video/" . $filename;
                     $message = Message::create($messageData);
+                    $messages[]['id'] = $message->id;
+
                 }
             }
-
+            $messageIds = array_column($messages, 'id');
+            $mess = Message::whereIn('id', $messageIds)->get();
             DB::commit();
             return response()->json([
                 'status' => true,
                 'message' => "Message Send Successfully",
-                'messages' => new AllMessageResource($message)
+                'messages' => AllMessageResource::collection($mess)
             ]);
         } catch (Throwable $th) {
             DB::rollBack();
@@ -249,9 +264,12 @@ class MessageController extends Controller
             $type = $request->type ?? '';
             if (empty($type) || empty($request->message))
                 throw new Error('Message Failed.');
+
+            $messages = []; // Initialize an array to store messages
             if ($type == 'message') {
                 $messageData['message'] = $request->message ?? '';
                 $message = Message::create($messageData);
+                $messages[] = array_merge($messageData, ['id' => $message->id]);
             }
 
             if ($type == 'voice') {
@@ -262,6 +280,7 @@ class MessageController extends Controller
                         $voice->storeAs('voice', $filename, "public");
                         $messageData['message'] = "voice/" . $filename;
                         $message = Message::create($messageData);
+                        $messages[] = array_merge($messageData, ['id' => $message->id, 'url' => request()->getSchemeAndHttpHost() . '/storage/']);
                     }
                 } else {
                     $voice = $request->message;
@@ -269,6 +288,7 @@ class MessageController extends Controller
                     $voice->storeAs('voice', $filename, "public");
                     $messageData['message'] = "voice/" . $filename;
                     $message = Message::create($messageData);
+                    $messages[] = array_merge($messageData, ['id' => $message->id, 'url' => request()->getSchemeAndHttpHost() . '/storage/']);
                 }
             }
 
@@ -280,6 +300,7 @@ class MessageController extends Controller
                         $image->storeAs('image', $filename, "public");
                         $messageData['message'] = "image/" . $filename;
                         $message = Message::create($messageData);
+                        $messages[] = array_merge($messageData, ['id' => $message->id, 'url' => request()->getSchemeAndHttpHost() . '/storage/']);
                     }
                 } else {
                     $image = $request->message;
@@ -287,6 +308,7 @@ class MessageController extends Controller
                     $image->storeAs('image', $filename, "public");
                     $messageData['message'] = "image/" . $filename;
                     $message = Message::create($messageData);
+                    $messages[] = array_merge($messageData, ['id' => $message->id, 'url' => request()->getSchemeAndHttpHost() . '/storage/']);
                 }
             }
 
@@ -298,6 +320,7 @@ class MessageController extends Controller
                         $video->storeAs('video', $filename, "public");
                         $messageData['message'] = "video/" . $filename;
                         $message = Message::create($messageData);
+                        $messages[] = array_merge($messageData, ['id' => $message->id, 'url' => request()->getSchemeAndHttpHost() . '/storage/']);
                     }
                 } else {
                     $video = $request->message;
@@ -305,14 +328,19 @@ class MessageController extends Controller
                     $video->storeAs('video', $filename, "public");
                     $messageData['message'] = "video/" . $filename;
                     $message = Message::create($messageData);
+                    $messages[] = array_merge($messageData, ['id' => $message->id, 'url' => request()->getSchemeAndHttpHost() . '/storage/']);
                 }
             }
-
+            // $pusher = new \Pusher\Pusher(env('PUSHER_APP_KEY'), env('PUSHER_APP_SECRET'), env('PUSHER_APP_ID'), array('cluster' => env('PUSHER_APP_CLUSTER')));
+            // if (!$pusher->trigger('user-' . $user_id, 'message', $messages))
+            //     throw new Error("Message not send!");
+            $messageIds = array_column($messages, 'id');
+            $mess = Message::whereIn('id', $messageIds)->get();
             DB::commit();
             return response()->json([
                 'status' => true,
                 'message' => "Message Send Successfully",
-                'messages' => new AllMessageResource($message)
+                'messages' => AllMessageResource::collection($mess)
             ]);
         } catch (Throwable $th) {
             DB::rollBack();
@@ -411,9 +439,9 @@ class MessageController extends Controller
         try {
             DB::beginTransaction();
             $user_id = auth()->user()->id;
-            $messages = Message::where('receiver_id', $user_id)->where('is_schedule' , 1)->get();
-            if(!empty($messages) && count($messages) > 0){
-                foreach($messages as $message){
+            $messages = Message::where('receiver_id', $user_id)->where('is_schedule', 1)->get();
+            if (!empty($messages) && count($messages) > 0) {
+                foreach ($messages as $message) {
                     $message->is_read = 1;
                     $message->save();
                 }
