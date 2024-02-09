@@ -45,6 +45,7 @@ class SocialLoginController extends Controller
             $socailLogin->account_type = 'google';
             $socailLogin->email = $googleRequest->email;
             $socailLogin->account_id = $googleRequest->id;
+            $socailLogin->full_name = $googleRequest->givenName;
             $socailLogin->family_name = $googleRequest->familyName;
             $socailLogin->given_name = $googleRequest->givenName;
             $socailLogin->is_active = true;
@@ -101,6 +102,7 @@ class SocialLoginController extends Controller
             $socailLogin->account_type = 'facebook';
             $socailLogin->email = $facebookRequest->email;
             $socailLogin->account_id = $facebookRequest->id;
+            $socailLogin->full_name = $facebookRequest->givenName;
             $socailLogin->family_name = $facebookRequest->familyName;
             $socailLogin->given_name = $facebookRequest->givenName;
             $socailLogin->is_active = true;
@@ -157,6 +159,7 @@ class SocialLoginController extends Controller
             $socailLogin->account_type = 'apple';
             $socailLogin->email = $appleRequest->email;
             $socailLogin->account_id = $appleRequest->id;
+            $socailLogin->full_name = $appleRequest->givenName;
             $socailLogin->family_name = $appleRequest->familyName;
             $socailLogin->given_name = $appleRequest->givenName;
             $socailLogin->is_active = true;
