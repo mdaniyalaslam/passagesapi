@@ -30,6 +30,8 @@ class SocialLoginController extends Controller
                 if (isset($googleRequest->photo)) {
                     $url = $googleRequest->photo;
                     $contents = file_get_contents($url);
+                    if (!$contents)
+                        throw new Error('Incorrect Image URL');
                     $name = 'user/Image-' . time() . "-" . rand() . ".png";
                     Storage::disk('public')->put($name, $contents);
                     $user->image = $name;
@@ -54,6 +56,8 @@ class SocialLoginController extends Controller
             if (isset($googleRequest->photo)) {
                 $url = $googleRequest->photo;
                 $contents = file_get_contents($url);
+                if (!$contents)
+                    throw new Error('Incorrect Image URL');
                 $name = 'user/Image-' . time() . "-" . rand() . ".png";
                 Storage::disk('public')->put($name, $contents);
                 $socailLogin->image = $name;
@@ -87,6 +91,8 @@ class SocialLoginController extends Controller
                 if (isset($facebookRequest->photo)) {
                     $url = $facebookRequest->photo;
                     $contents = file_get_contents($url);
+                    if (!$contents)
+                        throw new Error('Incorrect Image URL');
                     $name = 'user/Image-' . time() . "-" . rand() . ".png";
                     Storage::disk('public')->put($name, $contents);
                     $user->image = $name;
@@ -111,6 +117,8 @@ class SocialLoginController extends Controller
             if (isset($facebookRequest->photo)) {
                 $url = $facebookRequest->photo;
                 $contents = file_get_contents($url);
+                if (!$contents)
+                    throw new Error('Incorrect Image URL');
                 $name = 'user/Image-' . time() . "-" . rand() . ".png";
                 Storage::disk('public')->put($name, $contents);
                 $socailLogin->image = $name;
@@ -144,6 +152,8 @@ class SocialLoginController extends Controller
                 if (isset($appleRequest->photo)) {
                     $url = $appleRequest->photo;
                     $contents = file_get_contents($url);
+                    if (!$contents)
+                        throw new Error('Incorrect Image URL');
                     $name = 'user/Image-' . time() . "-" . rand() . ".png";
                     Storage::disk('public')->put($name, $contents);
                     $user->image = $name;
@@ -168,6 +178,8 @@ class SocialLoginController extends Controller
             if (isset($appleRequest->photo)) {
                 $url = $appleRequest->photo;
                 $contents = file_get_contents($url);
+                if (!$contents)
+                    throw new Error('Incorrect Image URL');
                 $name = 'user/Image-' . time() . "-" . rand() . ".png";
                 Storage::disk('public')->put($name, $contents);
                 $socailLogin->image = $name;
