@@ -331,9 +331,9 @@ class MessageController extends Controller
                     $messages[] = array_merge($messageData, ['id' => $message->id, 'url' => request()->getSchemeAndHttpHost() . '/storage/']);
                 }
             }
-            // $pusher = new \Pusher\Pusher(env('PUSHER_APP_KEY'), env('PUSHER_APP_SECRET'), env('PUSHER_APP_ID'), array('cluster' => env('PUSHER_APP_CLUSTER')));
-            // if (!$pusher->trigger('user-' . $user_id, 'message', $messages))
-            //     throw new Error("Message not send!");
+            $pusher = new \Pusher\Pusher(env('PUSHER_APP_KEY'), env('PUSHER_APP_SECRET'), env('PUSHER_APP_ID'), array('cluster' => env('PUSHER_APP_CLUSTER')));
+            if (!$pusher->trigger('user-' . $user_id, 'message', $messages))
+                throw new Error("Message not send!");
             $messageIds = array_column($messages, 'id');
             $mess = Message::whereIn('id', $messageIds)->get();
             DB::commit();
