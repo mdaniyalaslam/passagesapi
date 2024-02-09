@@ -22,7 +22,7 @@ class FacebookRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'id' => 'required',
+            'id' => 'required|unique:users,account_id',
             'email' => 'required|email|unique:users,email',
             'token' => 'required',
         ];
