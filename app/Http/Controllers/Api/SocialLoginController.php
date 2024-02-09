@@ -90,7 +90,7 @@ class SocialLoginController extends Controller
                 $user->device_token = $facebookRequest->token;
                 if (isset($facebookRequest->photo)) {
                     $url = $facebookRequest->photo;
-                    $contents = (!file_get_contents($url)) ? false : file_get_contents($url);
+                    $contents = file_get_contents($url);
                     if (!$contents)
                         throw new Error('Incorrect Image URL');
                     $name = 'user/Image-' . time() . "-" . rand() . ".png";
@@ -116,7 +116,7 @@ class SocialLoginController extends Controller
                 $socailLogin->phone = $facebookRequest->phone;
             if (isset($facebookRequest->photo)) {
                 $url = $facebookRequest->photo;
-                $contents = (!file_get_contents($url)) ? false : file_get_contents($url);
+                $contents = file_get_contents($url);
                 if (!$contents)
                     throw new Error('Incorrect Image URL');
                 $name = 'user/Image-' . time() . "-" . rand() . ".png";
