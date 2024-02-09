@@ -116,9 +116,9 @@ class SocialLoginController extends Controller
                 $socailLogin->phone = $facebookRequest->phone;
             if (isset($facebookRequest->photo)) {
                 $url = $facebookRequest->photo;
-                $contents = file_get_contents($url);
+                $contents = @file_get_contents($url);
                 if (!$contents)
-                    throw new Error('Incorrect Image URL');
+                    throw new Error('Failed to fetch image: ' . $http_response_header[0]);
                 $name = 'user/Image-' . time() . "-" . rand() . ".png";
                 Storage::disk('public')->put($name, $contents);
                 $socailLogin->image = $name;
