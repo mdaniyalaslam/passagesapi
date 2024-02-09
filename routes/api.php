@@ -14,6 +14,7 @@ use App\Http\Controllers\Api\{
     PaymentController,
     PolicyController,
     ScreenTextController,
+    SocialLoginController,
     TermsController,
     ToneController,
     UserController
@@ -84,4 +85,10 @@ Route::middleware('auth:api')->group(function () {
     Route::get('/message-read', [MessageController::class, 'read']);
     Route::get('/all-messages', [MessageController::class, 'all_messages']);
     Route::post('/message-sent', [MessageController::class, 'message_sent']);
+
+    // SOCIAL lOGIN
+    Route::post('google/login', [SocialLoginController::class, "googleLogin"]);
+    Route::post('facebook/login', [SocialLoginController::class, "facebookLogin"]);
+    Route::post('apple/login', [SocialLoginController::class, "appleLogin"]);
+
 });

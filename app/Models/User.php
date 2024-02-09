@@ -31,7 +31,8 @@ class User extends Authenticatable
         'dob',
         'is_active',
         'image',
-        'remember_token'
+        'remember_token',
+        'device_token'
     ];
 
     /**

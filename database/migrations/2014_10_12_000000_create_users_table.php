@@ -17,7 +17,7 @@ return new class extends Migration
             $table->string('full_name');
             $table->string('email')->unique();
             $table->timestamp('email_verified_at')->nullable();
-            $table->string('password');
+            $table->string('password')->nullable();
             $table->enum('account_type', ['facebook', 'google','apple'])->nullable();
             $table->string('account_id')->nullable();
             $table->string('family_name')->nullable();
@@ -27,6 +27,7 @@ return new class extends Migration
             $table->dateTime('dob')->nullable();
             $table->boolean('is_active')->default(false);
             $table->string('image')->nullable();
+            $table->string('device_token')->nullable();
             $table->rememberToken();
             $table->timestamps();
             $table->foreign('role_id')->references('id')->on('roles')->onDelete('cascade');
