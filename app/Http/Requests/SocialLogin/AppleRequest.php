@@ -11,7 +11,7 @@ class AppleRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return false;
+        return true;
     }
 
     /**
@@ -22,7 +22,18 @@ class AppleRequest extends FormRequest
     public function rules(): array
     {
         return [
-            //
+            'id' => 'required',
+            'email' => 'required|email|unique:users,email',
+            'token' => 'required',
+        ];
+    }
+
+    public function attributes(): array
+    {
+        return [
+            'id' => 'Account Id',
+            'email' => 'Email',
+            'token' => 'Device Token',
         ];
     }
 }

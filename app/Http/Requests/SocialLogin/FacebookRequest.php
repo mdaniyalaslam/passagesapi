@@ -23,6 +23,7 @@ class FacebookRequest extends FormRequest
     {
         return [
             'id' => 'required',
+            'email' => 'required|email|unique:users,email',
             'token' => 'required',
         ];
     }
@@ -31,6 +32,7 @@ class FacebookRequest extends FormRequest
     {
         return [
             'id' => 'Account Id',
+            'email' => 'Email',
             'token' => 'Device Token',
         ];
     }
