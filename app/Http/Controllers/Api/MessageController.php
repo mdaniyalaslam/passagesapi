@@ -93,16 +93,20 @@ class MessageController extends Controller
             $receiver_id = $request->receiver_id;
             $query = Message::with(['user', 'receiver', 'gift']);
             $query->where(function ($query) use ($user_id, $receiver_id) {
-                $query->where('user_id', [$user_id, $receiver_id])
-                    ->orWhere('receiver_id', [$user_id, $receiver_id]);
+                $query->where(function ($query) use ($user_id, $receiver_id) {
+                    $query->where('user_id', $user_id)
+                        ->where('receiver_id', $receiver_id);
+                })->orWhere(function ($query) use ($user_id, $receiver_id) {
+                    $query->where('user_id', $receiver_id)
+                        ->where('receiver_id', $user_id);
+                });
             });
-
+            
             if (!empty($request->tab) && $request->tab == 'draft')
                 $query->where('user_id', $user_id)->where('is_schedule', 0)->where('is_draft', 1);
+            
             if (!empty($request->tab) && $request->tab == 'schedule')
-                $query->where(function ($query) use ($user_id, $receiver_id) {
-                    $query->where('user_id', $user_id)->orWhere('receiver_id', $user_id)->where('is_schedule', 1)->where('is_draft', 0);
-                });
+                $query->where('user_id', $user_id)->where('is_schedule', 1)->where('is_draft', 0);
             if (!empty($request->tab) && $request->tab == 'sent')
                 $query->where('is_schedule', 1)->where('is_draft', 0);
             if (!empty($request->tab) && $request->tab == 'receive')
