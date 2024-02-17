@@ -101,10 +101,10 @@ class MessageController extends Controller
                         ->where('receiver_id', $user_id);
                 });
             });
-            
+
             if (!empty($request->tab) && $request->tab == 'draft')
                 $query->where('user_id', $user_id)->where('is_schedule', 0)->where('is_draft', 1);
-            
+
             if (!empty($request->tab) && $request->tab == 'schedule')
                 $query->where('user_id', $user_id)->where('is_schedule', 1)->where('is_draft', 0);
             if (!empty($request->tab) && $request->tab == 'sent')
@@ -114,7 +114,7 @@ class MessageController extends Controller
             if (!empty($request->tab) && $request->tab == 'early_access')
                 $query->where('is_draft', 0);
 
-            $messages = $query->orderBy('id', 'DESC')->get();
+            $messages = $query->orderBy('id', 'ASC')->get();
             return response()->json([
                 'status' => true,
                 'message' => ($messages->count()) . " message(s) found",
