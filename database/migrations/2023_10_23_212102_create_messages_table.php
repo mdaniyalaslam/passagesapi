@@ -13,6 +13,7 @@ return new class extends Migration
     {
         Schema::create('messages', function (Blueprint $table) {
             $table->id();
+            $table->unsignedBigInteger('chat_id')->nullable();
             $table->unsignedBigInteger('user_id')->nullable();
             $table->unsignedBigInteger('receiver_id')->nullable();
             $table->unsignedBigInteger('gift_id')->nullable();
@@ -24,6 +25,7 @@ return new class extends Migration
             $table->boolean('is_read')->default(0);
             $table->boolean('is_schedule')->default(0);
             $table->boolean('is_draft')->default(0);
+            $table->foreign('chat_id')->references('id')->on('chats')->onDelete('cascade');
             $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
             $table->foreign('gift_id')->references('id')->on('gifts')->onDelete('cascade');
             $table->foreign('receiver_id')->references('id')->on('users')->onDelete('cascade');

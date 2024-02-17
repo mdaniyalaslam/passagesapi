@@ -5,22 +5,14 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Message extends Model
+class Chat extends Model
 {
     use HasFactory;
+
     protected $fillable = [
-        'chat_id',
         'user_id',
         'receiver_id',
-        'gift_id',
-        'message',
-        'type',
-        'event_name',
-        'event_desc',
-        'schedule_date',
-        'is_read',
-        'is_schedule',
-        'is_draft',
+        'date',
     ];
 
     public function user()
@@ -33,13 +25,8 @@ class Message extends Model
         return $this->belongsTo(User::class, 'receiver_id', 'id');
     }
 
-    public function gift()
+    public function messages()
     {
-        return $this->belongsTo(Gift::class, 'gift_id', 'id');
-    }
-
-    public function chat()
-    {
-        return $this->belongsTo(Chat::class, 'chat_id', 'id');
+        return $this->hasMany(Message::class, 'chat_id', 'id');
     }
 }

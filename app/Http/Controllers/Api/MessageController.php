@@ -4,7 +4,9 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Message\MessageRequest;
+use App\Http\Resources\Message\AllChatResource;
 use App\Http\Resources\Message\AllMessageResource;
+use App\Models\Chat;
 use App\Models\Contact;
 use App\Models\Message;
 use App\Models\User;
@@ -23,60 +25,61 @@ class MessageController extends Controller
     {
         try {
             $user_id = auth()->user()->id;
-            $messageIds = [];
             $date = $request->date ?? Carbon::now()->format('Y-m-d');
-            $query = Message::query();
+            $query = Chat::with(['user', 'receiver']);
 
             if (!empty($request->tab) && $request->tab == 'draft') {
-                $query->select(DB::raw('MAX(id) as max_id'))
-                    ->where('user_id', $user_id)
-                    ->where('is_schedule', 0)
-                    ->where('is_draft', 1)
-                    ->whereRaw("DATE(schedule_date) = '{$date}'")
-                    ->groupBy('user_id', 'receiver_id');
+                $query->where('user_id', $user_id)
+                    ->whereRaw("DATE(date) = '{$date}'");
+                $query->where(function ($query) use ($user_id) {
+                    $query->whereHas('messages', function ($messageQuery) use ($user_id) {
+                        $messageQuery->where('is_draft', 1)
+                            ->where('user_id', $user_id);
+                    });
+                });
             }
             if (!empty($request->tab) && $request->tab == 'schedule') {
-                $query->select(DB::raw('MAX(id) as max_id'))
-                    ->where('user_id', $user_id)
-                    ->where('is_schedule', 0)
-                    ->where('is_draft', 0)
-                    ->whereRaw("DATE(schedule_date) = '{$date}'")
-                    ->groupBy('user_id', 'receiver_id');
+                $query->where('user_id', $user_id)
+                    ->whereRaw("DATE(date) = '{$date}'");
+                $query->where(function ($query) use ($user_id) {
+                    $query->whereHas('messages', function ($messageQuery) use ($user_id) {
+                        $messageQuery->where('is_draft', 0)
+                            ->where('user_id', $user_id);
+                    });
+                });
             }
-            if (!empty($request->tab) && $request->tab == 'sent') {
-                $query->select(DB::raw('MAX(id) as max_id'))
-                    ->where('user_id', $user_id)
-                    ->where('is_schedule', 1)
-                    ->where('is_draft', 0)
-                    ->whereRaw("DATE(schedule_date) = '{$date}'")
-                    ->groupBy('user_id', 'receiver_id');
-            }
+            // if (!empty($request->tab) && $request->tab == 'sent') {
+            //     $query->where('user_id', $user_id)
+            //         ->whereRaw("DATE(date) = '{$date}'");
+            // }
             if (!empty($request->tab) && $request->tab == 'receive') {
-                $query->select(DB::raw('MAX(id) as max_id'))
-                    ->where('receiver_id', $user_id)
-                    ->where('is_schedule', 1)
-                    ->where('is_draft', 0)
-                    ->whereRaw("DATE(schedule_date) = '{$date}'")
-                    ->groupBy('user_id', 'receiver_id');
+                $query->where('receiver_id', $user_id)
+                    ->whereRaw("DATE(date) = '{$date}'");
+                $query->where(function ($query) use ($user_id) {
+                    $query->whereHas('messages', function ($messageQuery) use ($user_id) {
+                        $messageQuery->where('is_draft', 0)->where('is_schedule', 1)
+                            ->where('receiver_id', $user_id);
+                    });
+                });
+
             }
             if (!empty($request->tab) && $request->tab == 'early_access') {
-                $query->select(DB::raw('MAX(id) as max_id'))
-                    ->where('receiver_id', $user_id)
-                    ->where('is_schedule', 0)
-                    ->where('is_draft', 0)
-                    ->whereRaw("DATE(schedule_date) = '{$date}'")
-                    ->groupBy('user_id', 'receiver_id');
+                $query->where('receiver_id', $user_id)
+                    ->whereRaw("DATE(date) = '{$date}'");
+                $query->where(function ($query) use ($user_id) {
+                    $query->whereHas('messages', function ($messageQuery) use ($user_id) {
+                        $messageQuery->where('is_draft', 0)
+                            ->where('receiver_id', $user_id);
+                    });
+                });
             }
-            $messageIds = $query->pluck('max_id');
-            $messages = Message::with(['user', 'receiver', 'gift'])
-                ->whereIn('id', $messageIds)
-                ->orderBy('id', 'DESC')
-                ->get();
+
+            $chats = $query->orderBy('id', 'DESC')->get();
 
             return response()->json([
                 'status' => true,
-                'message' => ($messages->count()) . " message(s) found",
-                'data' => AllMessageResource::collection($messages),
+                'message' => ($chats->count()) . " chat(s) found",
+                'data' => AllChatResource::collection($chats),
             ]);
         } catch (Throwable $th) {
             return response()->json([
@@ -90,30 +93,12 @@ class MessageController extends Controller
     {
         try {
             $user_id = auth()->user()->id;
-            $receiver_id = $request->receiver_id;
+            $chat_id = $request->chat_id;
             $query = Message::with(['user', 'receiver', 'gift']);
-            $query->where(function ($query) use ($user_id, $receiver_id) {
-                $query->where(function ($query) use ($user_id, $receiver_id) {
-                    $query->where('user_id', $user_id)
-                        ->where('receiver_id', $receiver_id);
-                })->orWhere(function ($query) use ($user_id, $receiver_id) {
-                    $query->where('user_id', $receiver_id)
-                        ->where('receiver_id', $user_id);
-                });
+            $query->where('chat_id', $chat_id);
+            $query->where(function ($query) use ($user_id) {
+                $query->where('user_id', $user_id)->orWhere('receiver_id', $user_id);
             });
-
-            if (!empty($request->tab) && $request->tab == 'draft')
-                $query->where('user_id', $user_id)->where('is_schedule', 0)->where('is_draft', 1);
-
-            if (!empty($request->tab) && $request->tab == 'schedule')
-                $query->where('user_id', $user_id)->where('is_schedule', 1)->where('is_draft', 0);
-            if (!empty($request->tab) && $request->tab == 'sent')
-                $query->where('is_schedule', 1)->where('is_draft', 0);
-            if (!empty($request->tab) && $request->tab == 'receive')
-                $query->where('is_schedule', 1)->where('is_draft', 0);
-            if (!empty($request->tab) && $request->tab == 'early_access')
-                $query->where('is_draft', 0);
-
             $messages = $query->orderBy('id', 'ASC')->get();
             return response()->json([
                 'status' => true,
@@ -148,7 +133,13 @@ class MessageController extends Controller
 
             if (empty($type) || empty($request->message))
                 throw new Error('Message Failed.');
+            $chat = Chat::create([
+                'user_id' => $user_id,
+                'receiver_id' => $receiver->id,
+                'date' => date('Y-m-d', strtotime($request->date)),
+            ]);
             $messageData = [
+                'chat_id' => $chat->id ?? '',
                 'user_id' => $user_id ?? '',
                 'receiver_id' => $receiver->id ?? '',
                 'gift_id' => $request->gift_id ?? null,
@@ -257,6 +248,7 @@ class MessageController extends Controller
                 throw new Error(422, 'Receiver not exist');
 
             $messageData = [
+                'chat_id' => $request->chat_id ?? '',
                 'user_id' => $user_id ?? '',
                 'receiver_id' => $receiver->id ?? '',
                 'gift_id' => $request->gift_id ?? null,
@@ -371,7 +363,7 @@ class MessageController extends Controller
         return response()->json([
             'status' => true,
             'message' => "Message has been successfully found",
-            'messages' => new AllMessageResource($message->load(['user', 'contact', 'gift'])),
+            'messages' => new AllMessageResource($message->load(['user', 'receiver', 'gift'])),
         ]);
     }
 
@@ -438,12 +430,12 @@ class MessageController extends Controller
         //
     }
 
-    public function read()
+    public function read($id)
     {
         try {
             DB::beginTransaction();
             $user_id = auth()->user()->id;
-            $messages = Message::where('receiver_id', $user_id)->where('is_schedule', 1)->get();
+            $messages = Message::where('chat_id',$id)->where('receiver_id', $user_id)->where('is_schedule', 1)->get();
             if (!empty($messages) && count($messages) > 0) {
                 foreach ($messages as $message) {
                     $message->is_read = 1;

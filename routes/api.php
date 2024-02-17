@@ -82,7 +82,7 @@ Route::middleware('auth:api')->group(function () {
     Route::post('/gift-payment', [PaymentController::class, 'gift_payment']);
 
     //Message
-    Route::get('/message-read', [MessageController::class, 'read']);
+    Route::get('/message-read/{id}', [MessageController::class, 'read']);
     Route::get('/all-messages', [MessageController::class, 'all_messages']);
     Route::post('/message-sent', [MessageController::class, 'message_sent']);
 

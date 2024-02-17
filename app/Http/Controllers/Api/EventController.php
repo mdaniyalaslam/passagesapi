@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\Event\StoreRequest;
 use App\Http\Requests\Event\UpdateRequest;
 use App\Http\Resources\Event\AllEventResource;
+use App\Models\Chat;
 use App\Models\Contact;
 use App\Models\Event;
 use App\Models\Log;
@@ -67,8 +68,13 @@ class EventController extends Controller
             $receiver = User::where('email', $contact->email)->where('is_active', 1)->first();
             if (empty($receiver))
                 throw new Error('First tell the person to register on this app and then you can add event');
-
+            $chat = Chat::create([
+                'user_id' => $user_id,
+                'receiver_id' => $receiver->id,
+                'date' => date('Y-m-d', strtotime($request->date)),
+            ]);
             $messageData = [
+                'chat_id' => $chat->id ?? '',
                 'user_id' => $user_id ?? '',
                 'receiver_id' => $receiver->id ?? '',
                 'event_name' => $request->name ?? '',

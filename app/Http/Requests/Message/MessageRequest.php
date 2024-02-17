@@ -22,6 +22,7 @@ class MessageRequest extends FormRequest
     public function rules(): array
     {
         return [
+            'chat_id' => 'nullable|required_with:receiver_id|exists:chats,id',
             'contact_id' => 'required_without:receiver_id|exists:contacts,id',
             'receiver_id' => 'required_without:contact_id|exists:users,id',
             'message' => 'required',
@@ -35,6 +36,7 @@ class MessageRequest extends FormRequest
     public function attributes(): array
     {
         return [
+            'chat_id' => 'Chat',
             'contact_id' => 'Contact',
             'receiver_id' => 'Receiver',
             'message' => 'Message',
