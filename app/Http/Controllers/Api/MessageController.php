@@ -96,8 +96,15 @@ class MessageController extends Controller
             $chat_id = $request->chat_id;
             $query = Message::with(['user', 'receiver', 'gift']);
             $query->where('chat_id', $chat_id);
+            // $query->where(function ($query) use ($user_id) {
+            //     $query->where('user_id', $user_id)->orWhere('receiver_id', $user_id);
+            // });
             $query->where(function ($query) use ($user_id) {
-                $query->where('user_id', $user_id)->orWhere('receiver_id', $user_id);
+                $query->where('user_id', $user_id)
+                    ->orWhere(function ($query) use ($user_id) {
+                        $query->where('receiver_id', $user_id)
+                            ->where('is_schedule', true);
+                    });
             });
             $messages = $query->orderBy('id', 'ASC')->get();
             return response()->json([
