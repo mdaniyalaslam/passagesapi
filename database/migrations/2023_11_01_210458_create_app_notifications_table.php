@@ -13,6 +13,14 @@ return new class extends Migration
     {
         Schema::create('app_notifications', function (Blueprint $table) {
             $table->id();
+            $table->unsignedBigInteger('sender_id')->nullable();
+            $table->unsignedBigInteger('receiver_id')->nullable();
+            $table->string('navigation')->nullable();
+            $table->text('notification')->nullable();
+            $table->dateTime('date')->nullable();
+            $table->boolean('is_read')->default(0);
+            $table->foreign('sender_id')->references('id')->on('users')->onDelete('cascade');
+            $table->foreign('receiver_id')->references('id')->on('users')->onDelete('cascade');
             $table->timestamps();
         });
     }

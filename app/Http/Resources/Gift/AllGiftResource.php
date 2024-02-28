@@ -16,9 +16,11 @@ class AllGiftResource extends JsonResource
     {
         return [
             'id' => $this->id,
+            'category' => $this->category,
             'name' => $this->name,
             'price' => $this->price,
             'image' => ($this->image) ? request()->getSchemeAndHttpHost() . '/storage/' . $this->image : '',
+            'is_popular' => $this->is_popular,
         ];
     }
 }

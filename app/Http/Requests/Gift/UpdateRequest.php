@@ -22,18 +22,22 @@ class UpdateRequest extends FormRequest
     public function rules(): array
     {
         return [
+            'category' => 'nullable',
             'name' => 'required|unique:gifts,name,' . $this->route('gift')->id,
             'price' => 'required|numeric',
-            'image' => 'nullable'
+            'image' => 'nullable',
+            'is_popular' => 'nullable|boolean'
         ];
     }
 
     public function attributes(): array
     {
         return [
+            'category' => 'Category',
             'name' => 'Name',
             'price' => 'Price',
-            'image' => 'Image'
+            'image' => 'Image',
+            'is_popular' => 'Is Popular'
         ];
     }
 }

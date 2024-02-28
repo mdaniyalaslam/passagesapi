@@ -27,7 +27,13 @@ class GiftController extends Controller
                 $query->skip($request->skip);
             if (!empty($request->take))
                 $query->take($request->take);
-            $gift = $query->orderBy('id', 'DESC')->get();
+            if(!empty($request->tab) && $request->tab == "category")
+                $query->orderBy('category', 'ASC');
+            if(!empty($request->tab) && $request->tab == "a-z")
+                $query->orderBy('name', 'ASC');
+            if(!empty($request->tab) && $request->tab == "popular")
+                $query->orderBy('is_popular', 'DESC');
+            $gift = $query->get();
             return response()->json([
                 'status' => true,
                 'message' => ($gift->count()) . " gift(s) found",

@@ -22,18 +22,22 @@ class StoreRequest extends FormRequest
     public function rules(): array
     {
         return [
+            'category' => 'nullable',
             'name' => 'required|unique:gifts,name',
             'price' => 'required|numeric',
-            'image' => 'required'
+            'image' => 'required',
+            'is_popular' => 'nullable|boolean'
         ];
     }
 
     public function attributes(): array
     {
         return [
+            'category' => 'Category',
             'name' => 'Name',
             'price' => 'Price',
-            'image' => 'Image'
+            'image' => 'Image',
+            'is_popular' => 'Is Popular'
         ];
     }
 }

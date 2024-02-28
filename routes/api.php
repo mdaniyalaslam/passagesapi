@@ -10,6 +10,7 @@ use App\Http\Controllers\Api\{
     GiftController,
     HelpController,
     LogController,
+    NotificationController,
     OcassionController,
     PaymentController,
     PolicyController,
@@ -85,6 +86,11 @@ Route::middleware('auth:api')->group(function () {
     Route::get('/message-read/{id}', [MessageController::class, 'read']);
     Route::get('/all-messages', [MessageController::class, 'all_messages']);
     Route::post('/message-sent', [MessageController::class, 'message_sent']);
+
+    //Notification
+    Route::get('/notifications', [NotificationController::class, 'index']);
+    Route::get('/notification-read', [NotificationController::class, 'read']);
+    Route::get('/notification-count', [NotificationController::class, 'count']);
 
 
 });
