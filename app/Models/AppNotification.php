@@ -11,8 +11,9 @@ class AppNotification extends Model
     protected $fillable = [
         'sender_id',
         'receiver_id',
-        'title',
-        'message',
+        'navigation',
+        'notification',
+        'right_image',
         'date',
         'is_read',
     ];

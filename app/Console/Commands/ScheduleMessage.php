@@ -45,12 +45,14 @@ class ScheduleMessage extends Command
                     if (!$originalMessage->save()) throw new Error("Message not schedule");
                     $title = 'Scheduled Message';
                     $notificationMessage = ($originalMessage->type == 'message') ? $originalMessage->message : 'Sent you a message';
+                    $notificationImage = ($originalMessage->type == 'image') ? $originalMessage->message : '';
                     $receiver = User::where('id' , $originalMessage->receiver_id)->first();
                     
                     $appnot = new AppNotification();
                     $appnot->sender_id = $originalMessage->user_id;
                     $appnot->receiver_id = $receiver->id;
                     $appnot->notification = $notificationMessage;
+                    $appnot->right_image = $notificationImage;
                     $appnot->navigation = $title;
                     $appnot->date = $date;
                     $appnot->save();
