@@ -16,12 +16,13 @@ class AllNotificationResource extends JsonResource
     {
         return [
             'id' => $this->id ?? '',
-            'sender' => $this->sender->full_name ?? '',
-            'sender_image' => (!empty($this->sender->image)) ? request()->getSchemeAndHttpHost() . '/storage/' . $this->sender->image : '',
-            'receiver' => $this->receiver->full_name ?? '',
+            'senderName' => $this->sender->full_name ?? '',
+            'avatar' => (!empty($this->sender->image)) ? request()->getSchemeAndHttpHost() . '/storage/' . $this->sender->image : '',
+            'receiverName' => $this->receiver->full_name ?? '',
             'navigation' => $this->navigation ?? '',
-            'notification' => $this->notification ?? '',
-            'right_image' => (!empty($this->right_image)) ? request()->getSchemeAndHttpHost() . '/storage/' . $this->right_image : '',
+            'type' => $this->type ?? '',
+            'message' => $this->notification ?? '',
+            'messageProp' => (!empty($this->right_image)) ? request()->getSchemeAndHttpHost() . '/storage/' . $this->right_image : '.',
             'date' => date('Y-m-d', strtotime($this->date)) ?? '',
             'is_read' => $this->is_read ?? 0,
         ];
