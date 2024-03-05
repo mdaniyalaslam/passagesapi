@@ -51,10 +51,11 @@ class ScheduleMessage extends Command
                     $appnot = new AppNotification();
                     $appnot->sender_id = $originalMessage->user_id;
                     $appnot->receiver_id = $receiver->id;
+                    $appnot->type = $originalMessage->type;
                     $appnot->notification = $notificationMessage;
                     $appnot->right_image = $notificationImage;
                     $appnot->navigation = $title;
-                    $appnot->date = $date;
+                    $appnot->date = Carbon::now();
                     $appnot->save();
     
                     // NotiSend::sendNotif($receiver->device_token, '', $title, $notificationMessage);

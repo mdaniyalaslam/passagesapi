@@ -23,7 +23,7 @@ class AllNotificationResource extends JsonResource
             'type' => $this->type ?? '',
             'message' => $this->notification ?? '',
             'messageProp' => (!empty($this->right_image)) ? request()->getSchemeAndHttpHost() . '/storage/' . $this->right_image : '.',
-            'date' => date('Y-m-d', strtotime($this->date)) ?? '',
+            'date' => date('h:i:s A', strtotime($this->date)) ?? '',
             'is_read' => $this->is_read ?? 0,
         ];
     }

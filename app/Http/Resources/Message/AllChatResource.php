@@ -16,7 +16,7 @@ class AllChatResource extends JsonResource
      */
     public function toArray(Request $request): array
     {
-        $messages = Message::where('chat_id',$this->id)->where('receiver_id',auth()->user()->id)->where('is_read',0)->where('is_schedule',1)->count();
+        $messages = Message::where('chat_id',$this->id)->where('is_read',0)->where('is_draft',0)->count();
         $read = ($messages > 0) ? 0 : 1;
         $resource = ((array) $this)['resource']->toArray();
         return [
