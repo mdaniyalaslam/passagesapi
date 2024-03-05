@@ -16,7 +16,16 @@ class AllChatResource extends JsonResource
      */
     public function toArray(Request $request): array
     {
-        $messages = Message::where('chat_id',$this->id)->where('is_read',0)->where('is_draft',0)->count();
+        $user_id = auth()->user()->id;
+        $query = Message::where('chat_id',$this->id)->where('is_read',0)->where('is_draft',0);
+        $query->where(function ($query) use ($user_id) {
+                $query->where('user_id', $user_id)
+                    ->orWhere(function ($query) use ($user_id) {
+                        $query->where('receiver_id', $user_id)
+                            ->where('is_schedule', true);
+                    });
+            });
+        $messages = $query->count();
         $read = ($messages > 0) ? 0 : 1;
         $resource = ((array) $this)['resource']->toArray();
         return [
