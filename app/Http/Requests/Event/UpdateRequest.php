@@ -24,7 +24,7 @@ class UpdateRequest extends FormRequest
         return [
             'contact_id' => 'required|exists:contacts,id',
             'name' => 'required',
-            'desc' => 'required',
+            'desc' => 'nullable',
             'date' => 'required'
         ];
     }

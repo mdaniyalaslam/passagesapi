@@ -55,7 +55,7 @@ class AuthController extends Controller
             DB::beginTransaction();
             $request->validate(['email' => 'required|email|exists:users,email']);
             $user = User::where('email', $request->email)->first();
-            $otp = rand(100000, 999999);
+            $otp = rand(1000, 9999);
             $token = DB::select("SELECT * FROM password_reset_tokens WHERE email = ?", [$user->email]);
             if (isset($token[0])) {
                 DB::update('update password_reset_tokens set token = ? where email = ?', [$otp, $user->email]);
