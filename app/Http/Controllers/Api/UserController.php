@@ -49,7 +49,7 @@ class UserController extends Controller
     {
         try {
             DB::beginTransaction();
-            $token = mt_rand(000001, 999999);
+            $token = rand(1000, 9999);
             $inputs = $request->except(
                 'role_id','image'
             );
@@ -224,6 +224,28 @@ class UserController extends Controller
             }
         } catch (Throwable $th) {
             DB::rollBack();
+            return response()->json(['status' => false, 'message' => $th->getMessage()], 500);
+        }
+    }
+    
+    public function uploadPhoto(Request $request)
+    {
+        try {
+            $user = User::where('email',$request->email)->first();
+            if (empty($user))
+                throw new Error('User not found');
+            if (!empty($request->image)) {
+                if (!empty($user->image) && file_exists(public_path('storage/' . $user->image)))
+                    unlink(public_path('storage/' . $user->image));
+                $image = $request->image;
+                $filename = "Profile-Photo" . time() . "-" . rand() . "." . $image->getClientOriginalExtension();
+                $image->storeAs('profile', $filename, "public");
+                $user->image = "profile/" . $filename;
+            }
+            if (!$user->save())
+                    throw new Error('Photo Upload Failed');
+            return response()->json(['status' => true, 'message' => 'Successfully Upload Photo', 'user' => new AllUserResource($user->load('role'))]);
+        } catch (Throwable $th) {
             return response()->json(['status' => false, 'message' => $th->getMessage()], 500);
         }
     }

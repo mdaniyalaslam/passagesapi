@@ -40,6 +40,7 @@ Route::post('/verify', [UserController::class, 'verify']);
 Route::get('/screen', [ScreenTextController::class, 'allText']);
 Route::get('/privacy-policy', [PolicyController::class, 'index']);
 Route::get('/term-condition', [TermsController::class, 'index']);
+Route::post('/upload-photo', [UserController::class, 'uploadPhoto']);
 
 Route::middleware('auth:api')->group(function () {
 
