@@ -30,6 +30,7 @@ class MessageRequest extends FormRequest
             'gift_id' => 'nullable|exists:gifts,id',
             'date' => 'required',
             'draft' => 'nullable',
+            'image_label' => 'nullable',
         ];
     }
 

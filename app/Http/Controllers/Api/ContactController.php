@@ -53,6 +53,9 @@ class ContactController extends Controller
             $user = User::where('email', $request->email)->where('is_active', 1)->first();
             if (empty($user) || $user->role_id == 1)
                 throw new Error('First tell the person to register on this app and then you can add them');
+            $contactExist = Contact::where('user_id',auth()->user()->id)->where('email',$request->email)->first();
+            if (!empty($contactExist))
+                throw new Error('Email already exist.');
             $inputs = $request->except(
                 'user_id',
                 'image',

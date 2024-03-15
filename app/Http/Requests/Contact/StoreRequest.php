@@ -23,7 +23,7 @@ class StoreRequest extends FormRequest
     {
         return [
             'full_name' => 'required',
-            'email' => 'required|email|unique:contacts,email',
+            'email' => 'required|email',
             'phone' => 'required',
             'dob' => 'required|date',
             'image' => 'nullable|file',

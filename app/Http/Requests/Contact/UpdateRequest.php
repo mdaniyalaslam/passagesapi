@@ -23,7 +23,7 @@ class UpdateRequest extends FormRequest
     {
         return [
             'full_name' => 'required',
-            'email' => 'required|email|unique:contacts,email,' . $this->route('contact')->id,
+            'email' => 'required|email',
             'phone' => 'required',
             'dob' => 'required|date',
             'image' => 'nullable|file',

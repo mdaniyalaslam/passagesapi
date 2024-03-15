@@ -17,6 +17,7 @@ class Message extends Model
         'type',
         'event_name',
         'event_desc',
+        'image_label',
         'schedule_date',
         'is_read',
         'is_schedule',

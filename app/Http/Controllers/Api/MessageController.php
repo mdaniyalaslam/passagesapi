@@ -132,12 +132,12 @@ class MessageController extends Controller
             $user_id = auth()->user()->id;
             $contact = Contact::where('id', $request->contact_id)->first();
             if (empty($contact))
-                throw new Error(404, 'Contact not found');
+                throw new Error('Contact not found');
+
             $receiver = User::where('email', $contact->email)->where('is_active', 1)->first();
             if (empty($receiver))
-                throw new Error(422, 'First tell the person must register on this app before you can add an event');
+                throw new Error('First tell the person must register on this app before you can add an event');
             $type = $request->type ?? '';
-
             if (empty($type) || empty($request->message))
                 throw new Error('Message Failed.');
             $chat = Chat::create([
@@ -252,7 +252,7 @@ class MessageController extends Controller
             $user_id = auth()->user()->id;
             $receiver = User::where('id', $request->receiver_id)->where('is_active', 1)->first();
             if (empty($receiver))
-                throw new Error(422, 'Receiver not exist');
+                throw new Error('Receiver not exist');
 
             $messageData = [
                 'chat_id' => $request->chat_id ?? '',

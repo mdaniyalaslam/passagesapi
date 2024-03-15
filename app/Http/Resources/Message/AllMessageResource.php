@@ -24,6 +24,7 @@ class AllMessageResource extends JsonResource
             'user_id' => $this->user_id ?? '',
             'receiver_id' => $this->receiver_id ?? '',
             'type' => $this->type ?? '',
+            'image_label' => $this->image_label ?? '',
             $this->mergeWhen((!empty($this->type) && $this->type != 'event'), [
                 'message' => ($this->type == 'message') ? $this->message : request()->getSchemeAndHttpHost() . '/storage/' . $this->message,
             ]),

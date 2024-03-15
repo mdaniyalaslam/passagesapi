@@ -21,6 +21,7 @@ return new class extends Migration
             $table->enum('type', ['image', 'voice', 'video', 'message', 'event']);
             $table->text('event_name')->nullable();
             $table->text('event_desc')->nullable();
+            $table->string('image_label')->nullable();
             $table->dateTime('schedule_date')->nullable();
             $table->boolean('is_read')->default(0);
             $table->boolean('is_schedule')->default(0);
