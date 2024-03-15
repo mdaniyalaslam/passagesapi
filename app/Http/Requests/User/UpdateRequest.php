@@ -28,6 +28,7 @@ class UpdateRequest extends FormRequest
             'gender' => "nullable",
             'dob' => "nullable",
             'image' => "nullable",
+            'is_privacy_policy' => "nullable"
         ];
     }
 

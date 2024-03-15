@@ -30,6 +30,7 @@ class User extends Authenticatable
         'gender',
         'dob',
         'is_active',
+        'is_privacy_policy',
         'image',
         'remember_token',
         'device_token'

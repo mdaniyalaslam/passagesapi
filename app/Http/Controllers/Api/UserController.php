@@ -249,4 +249,35 @@ class UserController extends Controller
             return response()->json(['status' => false, 'message' => $th->getMessage()], 500);
         }
     }
+    
+    public function tokenSend(Request $request)
+    {
+        try {
+            DB::beginTransaction();
+            $token = rand(1000, 9999);
+            $user = User::where('email',$request->email)->where('role_id' , 2)->first();
+            if (empty($user))
+                throw new Error('User not found');
+            $user->remember_token = $token;
+            if (!$user->save())
+                    throw new Error('Token send failed');
+            Mail::send('mail.verify', ['user' => $user], function ($message) use ($user) {
+                $message->to($user->email, $user->name);
+                $message->subject('Registration - Token');
+                $message->priority(3);
+            });
+            DB::commit();
+            return response()->json([
+                'status' => true,
+                'message' => "Otp Send Successfully. Check your email for verification.",
+                // 'user' => new AllUserResource($user),
+            ]);
+        } catch (Throwable $th) {
+            DB::rollback();
+            return response()->json([
+                'status' => false,
+                'message' => $th->getMessage(),
+            ], 500);
+        }
+    }
 }

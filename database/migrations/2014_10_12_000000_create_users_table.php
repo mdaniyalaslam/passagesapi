@@ -26,6 +26,7 @@ return new class extends Migration
             $table->string('gender')->nullable();
             $table->dateTime('dob')->nullable();
             $table->boolean('is_active')->default(false);
+            $table->boolean('is_privacy_policy')->default(false);
             $table->string('image')->nullable();
             $table->string('device_token')->nullable();
             $table->rememberToken();

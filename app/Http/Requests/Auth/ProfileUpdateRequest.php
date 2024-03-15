@@ -28,6 +28,7 @@ class ProfileUpdateRequest extends FormRequest
             'phone' => "nullable",
             'gender' => "nullable",
             'dob' => "nullable",
+            'is_privacy_policy' => "nullable"
         ];
     }
 

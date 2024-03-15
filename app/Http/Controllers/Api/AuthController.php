@@ -159,7 +159,7 @@ class AuthController extends Controller
     public function verifyPassword(VerifyPassword $request)
     {
         $user = User::where('email', auth()->user()->email)->first();
-
+        
         if (!$user || !Hash::check($request->password, $user->password)) {
             return response()->json(['message' => 'Password not valid'], 500);
         }

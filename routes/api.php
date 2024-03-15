@@ -41,6 +41,7 @@ Route::get('/screen', [ScreenTextController::class, 'allText']);
 Route::get('/privacy-policy', [PolicyController::class, 'index']);
 Route::get('/term-condition', [TermsController::class, 'index']);
 Route::post('/upload-photo', [UserController::class, 'uploadPhoto']);
+Route::post('/token-send', [UserController::class, 'tokenSend']);
 
 Route::middleware('auth:api')->group(function () {
 

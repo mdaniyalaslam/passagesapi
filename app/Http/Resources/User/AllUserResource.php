@@ -24,6 +24,7 @@ class AllUserResource extends JsonResource
             'gender' => $this->gender ?? '',
             'dob' => date('Y-m-d' , strtotime($this->dob)) ?? '',
             'is_active' => $this->is_active ?? '',
+            'is_privacy_policy' => $this->is_privacy_policy ?? '',
             'image' => ($this->image) ? request()->getSchemeAndHttpHost() . '/storage/' . $this->image : '',
             'role' => new RoleResource($this->role),
         ];

@@ -26,7 +26,7 @@ class StoreRequest extends FormRequest
             'email' => 'required|email|unique:contacts,email',
             'phone' => 'required',
             'dob' => 'required|date',
-            'image' => 'required|file',
+            'image' => 'nullable|file',
         ];
     }
 

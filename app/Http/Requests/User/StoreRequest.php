@@ -27,6 +27,7 @@ class StoreRequest extends FormRequest
             'password' => "required|confirmed",
             'phone' => "nullable",
             'image' => "nullable",
+            'is_privacy_policy' => "nullable"
         ];
     }
 
