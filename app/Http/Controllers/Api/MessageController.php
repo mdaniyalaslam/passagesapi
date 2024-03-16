@@ -151,6 +151,7 @@ class MessageController extends Controller
                 'receiver_id' => $receiver->id ?? '',
                 'gift_id' => $request->gift_id ?? null,
                 'type' => $type,
+                'image_label' => $request->image_label ?? '',
                 'is_draft' => (!empty($request->draft) && $request->draft == 1) ? 1 : 0,
                 'schedule_date' => date('Y-m-d', strtotime($request->date)),
             ];
@@ -263,6 +264,7 @@ class MessageController extends Controller
                 'is_schedule' => (!empty($request->draft) && $request->draft == 1) ? 0 : 1,
                 'schedule_date' => date('Y-m-d', strtotime($request->date)),
                 'type' => $request->type,
+                'image_label' => $request->image_label ?? '',
             ];
             $type = $request->type ?? '';
             if (empty($type) || empty($request->message))
