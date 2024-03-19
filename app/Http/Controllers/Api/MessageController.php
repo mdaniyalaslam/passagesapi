@@ -466,72 +466,77 @@ class MessageController extends Controller
                 $messages[]['id'] = $message->id;
             }
 
-            if ($type == 'voice') {
-                if (is_array($request->message)) {
-                    foreach ($request->message as $voices) {
-                        $voice = $voices;
-                        $filename = "Voice-" . time() . "-" . rand() . "." . $voice->getClientOriginalExtension();
-                        $voice->storeAs('voice', $filename, "public");
-                        $messageData['message'] = "voice/" . $filename;
-                        $message->update($messageData);
-                        $messages[]['id'] = $message->id;
+            // if ($type == 'voice') {
+            //     if (!empty($message->voice) && file_exists(public_path('storage/' . $message->voice)))
+            //                unlink(public_path('storage/' . $message->voice));
+            //     if (is_array($request->message)) {
+            //         foreach ($request->message as $voices) {
+            //             $voice = $voices;
+            //             $filename = "Voice-" . time() . "-" . rand() . "." . $voice->getClientOriginalExtension();
+            //             $voice->storeAs('voice', $filename, "public");
+            //             $messageData['message'] = "voice/" . $filename;
+            //             $message->update($messageData);
+            //             $messages[]['id'] = $message->id;
 
-                    }
-                } else {
-                    $voice = $request->message;
-                    $filename = "Voice-" . time() . "-" . rand() . "." . $voice->getClientOriginalExtension();
-                    $voice->storeAs('voice', $filename, "public");
-                    $messageData['message'] = "voice/" . $filename;
-                    $message->update($messageData);
-                    $messages[]['id'] = $message->id;
+            //         }
+            //     } else {
+            //         $voice = $request->message;
+            //         $filename = "Voice-" . time() . "-" . rand() . "." . $voice->getClientOriginalExtension();
+            //         $voice->storeAs('voice', $filename, "public");
+            //         $messageData['message'] = "voice/" . $filename;
+            //         $message->update($messageData);
+            //         $messages[]['id'] = $message->id;
 
-                }
-            }
+            //     }
+            // }
 
-            if ($type == 'image') {
-                if (is_array($request->message)) {
-                    foreach ($request->message as $images) {
-                        $image = $images;
-                        $filename = "Image-" . time() . "-" . rand() . "." . $image->getClientOriginalExtension();
-                        $image->storeAs('image', $filename, "public");
-                        $messageData['message'] = "image/" . $filename;
-                        $message->update($messageData);
-                        $messages[]['id'] = $message->id;
+            // if ($type == 'image') {
+            //     if (!empty($message->image) && file_exists(public_path('storage/' . $message->image)))
+            //                unlink(public_path('storage/' . $message->image));
+            //     if (is_array($request->message)) {
+            //         foreach ($request->message as $images) {
+            //             $image = $images;
+            //             $filename = "Image-" . time() . "-" . rand() . "." . $image->getClientOriginalExtension();
+            //             $image->storeAs('image', $filename, "public");
+            //             $messageData['message'] = "image/" . $filename;
+            //             $message->update($messageData);
+            //             $messages[]['id'] = $message->id;
 
-                    }
-                } else {
-                    $image = $request->message;
-                    $filename = "Image-" . time() . "-" . rand() . "." . $image->getClientOriginalExtension();
-                    $image->storeAs('image', $filename, "public");
-                    $messageData['message'] = "image/" . $filename;
-                    $message->update($messageData);
-                    $messages[]['id'] = $message->id;
+            //         }
+            //     } else {
+            //         $image = $request->message;
+            //         $filename = "Image-" . time() . "-" . rand() . "." . $image->getClientOriginalExtension();
+            //         $image->storeAs('image', $filename, "public");
+            //         $messageData['message'] = "image/" . $filename;
+            //         $message->update($messageData);
+            //         $messages[]['id'] = $message->id;
 
-                }
-            }
+            //     }
+            // }
 
-            if ($type == 'video') {
-                if (is_array($request->message)) {
-                    foreach ($request->message as $videos) {
-                        $video = $videos;
-                        $filename = "Video-" . time() . "-" . rand() . "." . $video->getClientOriginalExtension();
-                        $video->storeAs('video', $filename, "public");
-                        $messageData['message'] = "video/" . $filename;
-                        $message->update($messageData);
-                        $messages[]['id'] = $message->id;
+            // if ($type == 'video') {
+            //     if (!empty($message->video) && file_exists(public_path('storage/' . $message->video)))
+            //                unlink(public_path('storage/' . $message->video));
+            //     if (is_array($request->message)) {
+            //         foreach ($request->message as $videos) {
+            //             $video = $videos;
+            //             $filename = "Video-" . time() . "-" . rand() . "." . $video->getClientOriginalExtension();
+            //             $video->storeAs('video', $filename, "public");
+            //             $messageData['message'] = "video/" . $filename;
+            //             $message->update($messageData);
+            //             $messages[]['id'] = $message->id;
 
-                    }
-                } else {
-                    $video = $request->message;
-                    $filename = "Video-" . time() . "-" . rand() . "." . $video->getClientOriginalExtension();
-                    $video->storeAs('video', $filename, "public");
-                    $messageData['message'] = "video/" . $filename;
-                    $message->update($messageData);
-                    $messages[]['id'] = $message->id;
+            //         }
+            //     } else {
+            //         $video = $request->message;
+            //         $filename = "Video-" . time() . "-" . rand() . "." . $video->getClientOriginalExtension();
+            //         $video->storeAs('video', $filename, "public");
+            //         $messageData['message'] = "video/" . $filename;
+            //         $message->update($messageData);
+            //         $messages[]['id'] = $message->id;
 
-                }
-            }
-            dd($messages);
+            //     }
+            // }
             $messageIds = array_column($messages, 'id');
             $mess = Message::whereIn('id', $messageIds)->get();
             DB::commit();
