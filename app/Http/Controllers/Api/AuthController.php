@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Auth\ChangePasswordRequest;
+use App\Http\Requests\Auth\EmailPhoneCheckRequest;
 use App\Http\Requests\Auth\LoginRequest;
 use App\Http\Requests\Auth\ProfileUpdateRequest;
 use App\Http\Requests\Auth\ResetPasswordRequest;
@@ -96,6 +97,23 @@ class AuthController extends Controller
         }
     }
 
+    public function resetPasswordPhone(ResetPasswordRequest $request)
+    {
+        try {
+            DB::beginTransaction();
+            User::where('email', $request->email)->update(['password' => Hash::make($request->password)]);
+            if(!$request->is_confirm) DB::delete('DELETE FROM password_reset_tokens WHERE email = ?', [$request->email]);
+            DB::commit();
+            return response()->json([
+                'status' => true,
+                'message' => "Password has been reset for " . $request->email,
+            ]);
+        } catch (Throwable $th) {
+            DB::rollback();
+            return response()->json(['status' => false, 'message' => $th->getMessage()], 500);
+        }
+    }
+
     public function profileUpdate(ProfileUpdateRequest $request)
     {
         try {
@@ -159,11 +177,22 @@ class AuthController extends Controller
     public function verifyPassword(VerifyPassword $request)
     {
         $user = User::where('email', auth()->user()->email)->first();
-        
+
         if (!$user || !Hash::check($request->password, $user->password)) {
-            return response()->json(['message' => 'Password not valid'], 500);
+            return response()->json(['status' => false, 'message' => 'Password not valid'], 500);
         }
 
-        return response()->json(['message' => 'Password is valid'], 200);
+        return response()->json(['status' => true, 'message' => 'Password is valid']);
+    }
+
+    public function emailPhoneCheck(EmailPhoneCheckRequest $request)
+    {
+        $user = User::where('email', $request->email)->where('phone', $request->phone)->first();
+
+        if (empty($user)) {
+            return response()->json(['status' => false, 'message' => 'User not found'], 404);
+        }
+
+        return response()->json(['status' => true, 'message' => 'User found']);
     }
 }

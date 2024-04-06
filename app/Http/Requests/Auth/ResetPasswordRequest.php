@@ -23,7 +23,8 @@ class ResetPasswordRequest extends FormRequest
     {
         return [
             'email' => "required|email|exists:users",
-            'otp' => "required|exists:password_reset_tokens,token,email," . request()->email,
+            'otp' => 'required_without:is_confirm|exists:password_reset_tokens,token,email,' . request()->email,
+            'is_confirm' => 'required_without:otp',
             'password' => "required|min:8|confirmed",
         ];
     }

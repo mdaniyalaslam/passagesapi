@@ -34,6 +34,8 @@ use App\Http\Controllers\Api\{
 // Auth
 Route::post('/login', [AuthController::class, 'login']);
 Route::post('/reset-password', [AuthController::class, 'resetPassword']);
+Route::post('/reset-password-phone', [AuthController::class, 'resetPasswordPhone']);
+Route::post('/email-phone-check', [AuthController::class, 'emailPhoneCheck']);
 Route::post('/forgot-password', [AuthController::class, 'forgotPassword']);
 Route::post('/user', [UserController::class, 'store']);
 Route::post('/verify', [UserController::class, 'verify']);
