@@ -12,6 +12,7 @@ use Error;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Mail;
+use Stripe;
 use Throwable;
 
 class UserController extends Controller
@@ -23,10 +24,14 @@ class UserController extends Controller
     {
         try {
             $query = User::with('role');
-            if (!empty($request->skip))
+            if (!empty($request->skip)) {
                 $query->skip($request->skip);
-            if (!empty($request->take))
+            }
+
+            if (!empty($request->take)) {
                 $query->take($request->take);
+            }
+
             $user = $query->orderBy('id', 'DESC')->get();
             return response()->json([
                 'status' => true,
@@ -51,7 +56,7 @@ class UserController extends Controller
             DB::beginTransaction();
             $token = rand(1000, 9999);
             $inputs = $request->except(
-                'role_id','image'
+                'role_id', 'image'
             );
             $inputs['role_id'] = 2;
             $inputs['remember_token'] = $token;
@@ -122,8 +127,10 @@ class UserController extends Controller
                 'image',
             );
             if (!empty($request->image)) {
-                if (!empty($user->image) && file_exists(public_path('storage/' . $user->image)))
+                if (!empty($user->image) && file_exists(public_path('storage/' . $user->image))) {
                     unlink(public_path('storage/' . $user->image));
+                }
+
                 $image = $request->image;
                 $filename = "Image-" . time() . "-" . rand() . "." . $image->getClientOriginalExtension();
                 $image->storeAs('user', $filename, "public");
@@ -160,8 +167,10 @@ class UserController extends Controller
 
         try {
             DB::beginTransaction();
-            if (!empty($user->image) && file_exists(public_path('storage/' . $user->image)))
+            if (!empty($user->image) && file_exists(public_path('storage/' . $user->image))) {
                 unlink(public_path('storage/' . $user->image));
+            }
+
             $user->delete();
             DB::commit();
             return response()->json([
@@ -182,8 +191,10 @@ class UserController extends Controller
         try {
             DB::beginTransaction();
             $user = User::where('email', $request->email)->where('remember_token', $request->token)->first();
-            if (!$user)
+            if (!$user) {
                 throw new Error('Invalid email or token.', 422);
+            }
+
             $user->is_active = true;
             $user->remember_token = null;
             $user->save();
@@ -207,18 +218,24 @@ class UserController extends Controller
         try {
             DB::beginTransaction();
             $user = User::where('id', $id)->first();
-            if (empty($user))
+            if (empty($user)) {
                 throw new Error('User not found');
+            }
+
             if ($user->is_active == 1) {
                 $user->is_active = 0;
-                if (!$user->save())
+                if (!$user->save()) {
                     throw new Error('Account not delete');
+                }
+
                 DB::commit();
                 return response()->json(['status' => true, 'message' => 'Successfully Delete Your Account']);
             } else {
                 $user->is_active = 1;
-                if (!$user->save())
+                if (!$user->save()) {
                     throw new Error('Account not delete');
+                }
+
                 DB::commit();
                 return response()->json(['status' => true, 'message' => 'Successfully Recover Your Account']);
             }
@@ -227,40 +244,50 @@ class UserController extends Controller
             return response()->json(['status' => false, 'message' => $th->getMessage()], 500);
         }
     }
-    
+
     public function uploadPhoto(Request $request)
     {
         try {
-            $user = User::where('email',$request->email)->first();
-            if (empty($user))
+            $user = User::where('email', $request->email)->first();
+            if (empty($user)) {
                 throw new Error('User not found');
+            }
+
             if (!empty($request->image)) {
-                if (!empty($user->image) && file_exists(public_path('storage/' . $user->image)))
+                if (!empty($user->image) && file_exists(public_path('storage/' . $user->image))) {
                     unlink(public_path('storage/' . $user->image));
+                }
+
                 $image = $request->image;
                 $filename = "Profile-Photo" . time() . "-" . rand() . "." . $image->getClientOriginalExtension();
                 $image->storeAs('profile', $filename, "public");
                 $user->image = "profile/" . $filename;
             }
-            if (!$user->save())
-                    throw new Error('Photo Upload Failed');
+            if (!$user->save()) {
+                throw new Error('Photo Upload Failed');
+            }
+
             return response()->json(['status' => true, 'message' => 'Successfully Upload Photo', 'user' => new AllUserResource($user->load('role'))]);
         } catch (Throwable $th) {
             return response()->json(['status' => false, 'message' => $th->getMessage()], 500);
         }
     }
-    
+
     public function tokenSend(Request $request)
     {
         try {
             DB::beginTransaction();
             $token = rand(1000, 9999);
-            $user = User::where('email',$request->email)->where('role_id' , 2)->first();
-            if (empty($user))
+            $user = User::where('email', $request->email)->where('role_id', 2)->first();
+            if (empty($user)) {
                 throw new Error('User not found');
+            }
+
             $user->remember_token = $token;
-            if (!$user->save())
-                    throw new Error('Token send failed');
+            if (!$user->save()) {
+                throw new Error('Token send failed');
+            }
+
             Mail::send('mail.verify', ['user' => $user], function ($message) use ($user) {
                 $message->to($user->email, $user->name);
                 $message->subject('Registration - Token');
@@ -280,4 +307,85 @@ class UserController extends Controller
             ], 500);
         }
     }
+
+    public function connectedAccountStatusCheck()
+    {
+        try {
+            $accountId = auth()->user()->accountId;
+            if (!$accountId) {
+                throw new Error('Account not found');
+            }
+
+            Stripe\Stripe::setApiKey(env('SECRET_KEY'));
+            $account = Stripe\Account::retrieve($accountId, []);
+            if (!$account || !$account->details_submitted || !$account->charges_enabled || !$account->payouts_enabled) {
+                throw new Error('Account detailed not submitted');
+            }
+
+            return response()->json([
+                'status' => true,
+                'message' => "Connected Account successfully generated",
+            ]);
+        } catch (Throwable $th) {
+            return response()->json([
+                'status' => false,
+                'message' => $th->getMessage(),
+            ], 500);
+        }
+    }
+
+    public function connectedAccount()
+    {
+        try {
+            $user = auth()->user();
+            $accountId = $user?->accountId;
+            Stripe\Stripe::setApiKey(env('SECRET_KEY'));
+            if ($accountId) {
+                $accountLink = Stripe\AccountLink::create([
+                    'account' => $accountId,
+                    'refresh_url' => env('LIVEURL') . '?status=false&message=Something Went Wrong.',
+                    'return_url' => env('LIVEURL') . '?status=true&message=Your Connected Create Successfully',
+                    'type' => 'account_onboarding',
+                ]);
+            } else {
+                $account = Stripe\Account::create([
+                    'type' => 'express',
+                    'capabilities' => [
+                        'card_payments' => ['requested' => true],
+                        'transfers' => ['requested' => true],
+                    ],
+                    'settings' => [
+                        'payouts' => [
+                            'schedule' => [
+                                'interval' => 'manual',
+                            ],
+                        ],
+                    ],
+                ]);
+                $accountLink = Stripe\AccountLink::create([
+                    'account' => $account->id,
+                    'refresh_url' => env('LIVEURL') . '?status=false&message=Something Went Wrong.',
+                    'return_url' => env('LIVEURL') . '?status=true&message=Your Connected Create Successfully',
+                    'type' => 'account_onboarding',
+                ]);
+                DB::beginTransaction();
+                $user = User::findOrFail($user->id);
+                $user->accountId = $account->id;
+                $user->save();
+                DB::commit();
+            }
+            return response()->json([
+                'status' => true,
+                'message' => "Connected Account successfully generated",
+                'link' => $accountLink,
+            ]);
+        } catch (Throwable $th) {
+            DB::rollback();
+            return response()->json([
+                'status' => false,
+                'message' => $th->getMessage(),
+            ], 500);
+        }
+    }
+
 }

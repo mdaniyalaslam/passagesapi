@@ -85,6 +85,12 @@ Route::middleware('auth:api')->group(function () {
 
     //Gift Payment
     Route::post('/gift-payment', [PaymentController::class, 'gift_payment']);
+    Route::post('/send-gift', [PaymentController::class, 'send_gift']);
+    Route::get('/gift-payment', [PaymentController::class, 'gift_payment_index']);
+
+    //connected account
+    Route::get('/connected-account-status-check', [UserController::class, 'connectedAccountStatusCheck']);
+    Route::get('/connected-account', [UserController::class, 'connectedAccount']);
 
     //Message
     Route::get('/message-read/{id}', [MessageController::class, 'read']);
